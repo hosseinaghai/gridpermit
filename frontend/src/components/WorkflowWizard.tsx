@@ -103,7 +103,7 @@ export default function WorkflowWizard({ project, template }: Props) {
     ?.filter((t) => t.due_date)
     .map((t) => ({ ...t, daysLeft: daysUntil(t.due_date) }))
     .sort((a, b) => a.daysLeft - b.daysLeft)
-    .slice(0, 3) ?? [];
+    ?? [];
 
   return (
     <div>
@@ -165,7 +165,7 @@ export default function WorkflowWizard({ project, template }: Props) {
                           : "text-gray-400"
                     }`}
                   />
-                  <span className="truncate text-xs text-gray-700">{d.title}</span>
+                  <span className="text-xs text-gray-700">{d.title}</span>
                   <span
                     className={`ml-auto shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold ${
                       d.daysLeft <= 3

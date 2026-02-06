@@ -245,7 +245,7 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
                       </span>
                     </div>
                     <p
-                      className={`mt-0.5 truncate text-sm ${
+                      className={`mt-0.5 text-sm ${
                         !email.read ? "font-semibold text-gray-800" : "text-gray-600"
                       }`}
                     >

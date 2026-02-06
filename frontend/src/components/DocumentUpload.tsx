@@ -103,7 +103,7 @@ export default function DocumentUpload({
             >
               <Paperclip className="h-3.5 w-3.5 shrink-0 text-gray-400" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-medium text-gray-700">
+                <p className="text-xs font-medium text-gray-700">
                   {f.name}
                 </p>
                 <p className="text-[10px] text-gray-400">
