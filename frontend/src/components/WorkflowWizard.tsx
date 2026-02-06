@@ -108,14 +108,14 @@ export default function WorkflowWizard({ project, template }: Props) {
   return (
     <div>
       {/* Progress dashboard */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-4 grid gap-3 sm:mb-6 sm:gap-4 sm:grid-cols-3">
         {/* Overall progress */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
             Gesamtfortschritt
           </p>
           <div className="mt-2 flex items-end gap-2">
-            <span className="text-3xl font-bold text-gray-900">{overallPct}%</span>
+            <span className="text-2xl font-bold text-gray-900 sm:text-3xl">{overallPct}%</span>
             <span className="mb-1 text-xs text-gray-500">{doneTasks}/{totalTasks} Aufgaben</span>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
@@ -132,7 +132,7 @@ export default function WorkflowWizard({ project, template }: Props) {
             Aktuelle Phase
           </p>
           <div className="mt-2 flex items-end gap-2">
-            <span className="text-3xl font-bold text-gray-900">{stagePct}%</span>
+            <span className="text-2xl font-bold text-gray-900 sm:text-3xl">{stagePct}%</span>
             <span className="mb-1 text-xs text-gray-500">
               {stageCompleted}/{stageTotal} erledigt
             </span>
@@ -213,7 +213,7 @@ export default function WorkflowWizard({ project, template }: Props) {
 
       {/* Stage header */}
       <div className="mb-6">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <span
             className={`rounded px-2 py-0.5 text-xs font-semibold ${
               stage.status === "completed"
@@ -236,7 +236,7 @@ export default function WorkflowWizard({ project, template }: Props) {
             Phase {selectedStageIndex + 1}/{template.stages.length}
           </span>
         </div>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900">
+        <h1 className="mt-2 text-xl font-bold text-gray-900 sm:text-2xl">
           {stageTpl.title}
         </h1>
         <p className="mt-1 text-sm text-gray-500">{stageTpl.description}</p>
@@ -371,17 +371,18 @@ export default function WorkflowWizard({ project, template }: Props) {
           return (
             <div
               key={task.id}
-              className={`rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md ${
+              className={`rounded-xl border bg-white p-4 shadow-sm transition hover:shadow-md sm:p-5 ${
                 isNext
                   ? "border-blue-200 ring-1 ring-blue-100"
                   : "border-gray-200"
               }`}
             >
-              <div className="flex items-start gap-4">
-                <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${cfg.color}`} />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-gray-900">{tpl.title}</h3>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+                <div className="flex items-start gap-3 sm:gap-4 sm:flex-1 sm:min-w-0">
+                  <Icon className={`mt-0.5 h-6 w-6 shrink-0 ${cfg.color}`} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-semibold text-gray-900">{tpl.title}</h3>
                     <span
                       className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                         task.status === "done"
@@ -419,11 +420,12 @@ export default function WorkflowWizard({ project, template }: Props) {
                         KI-Unterstützung
                       </span>
                     )}
+                    </div>
                   </div>
                 </div>
                 <button
                   onClick={() => openTask(task.id)}
-                  className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition ${
+                  className={`w-full shrink-0 rounded-lg px-4 py-2.5 text-sm font-medium transition sm:w-auto sm:py-2 ${
                     task.status === "done"
                       ? "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
                       : isNext

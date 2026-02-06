@@ -99,7 +99,7 @@ export default function DocumentUpload({
           {files.map((f) => (
             <div
               key={f.id}
-              className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2"
+              className="flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-2.5"
             >
               <Paperclip className="h-3.5 w-3.5 shrink-0 text-gray-400" />
               <div className="min-w-0 flex-1">
@@ -114,7 +114,7 @@ export default function DocumentUpload({
               {!disabled && (
                 <button
                   onClick={() => removeFile(f.id)}
-                  className="shrink-0 rounded p-1 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
+                  className="shrink-0 rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500 sm:p-1"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>

@@ -232,7 +232,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
         center={[50.53, 9.85]}
         zoom={9}
         className="h-full w-full"
-        style={{ minHeight: 400 }}
+        style={{ minHeight: 200 }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org">OpenStreetMap</a>'

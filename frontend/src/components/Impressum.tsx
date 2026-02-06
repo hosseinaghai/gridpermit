@@ -9,11 +9,11 @@ export default function Impressum({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="relative mx-4 w-full max-w-lg rounded-xl bg-white p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center">
+      <div className="relative w-full max-w-lg rounded-t-xl bg-white p-5 shadow-2xl sm:mx-4 sm:rounded-xl sm:p-8">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+          className="absolute right-3 top-3 rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 sm:right-4 sm:top-4 sm:p-1"
         >
           <X className="h-5 w-5" />
         </button>

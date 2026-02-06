@@ -182,10 +182,10 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/30 pt-16">
-      <div className="mx-4 w-full max-w-2xl rounded-xl border border-gray-200 bg-white shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 sm:items-start sm:pt-16">
+      <div className="w-full max-h-[85vh] rounded-t-xl border border-gray-200 bg-white shadow-2xl sm:mx-4 sm:max-w-2xl sm:rounded-xl sm:max-h-none">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-5 sm:py-4">
           <div className="flex items-center gap-3">
             <Inbox className="h-5 w-5 text-blue-600" />
             <h2 className="text-lg font-bold text-gray-900">E-Mail-Eingang</h2>
@@ -204,7 +204,7 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
         </div>
 
         {/* Email list */}
-        <div className="max-h-[70vh] overflow-y-auto">
+        <div className="max-h-[65vh] overflow-y-auto sm:max-h-[70vh]">
           {emails.map((email) => {
             const isExpanded = expandedId === email.id;
             return (

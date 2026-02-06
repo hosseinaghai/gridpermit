@@ -152,16 +152,16 @@ export default function TaskWorker({
     <div className="mx-auto max-w-3xl">
       <button
         onClick={onClose}
-        className="mb-4 flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        className="-ml-2 mb-4 flex items-center gap-1.5 rounded-lg px-2 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700"
       >
         <ArrowLeft className="h-4 w-4" />
         Zurück zur Übersicht
       </button>
 
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-100 p-6">
+        <div className="border-b border-gray-100 p-4 sm:p-6">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
               {taskTemplate.title}
             </h2>
             {isDone && (
@@ -174,7 +174,7 @@ export default function TaskWorker({
             {taskTemplate.description}
           </p>
           {/* Action buttons in header */}
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             {isDone && (
               <button
                 onClick={() => reopenMutation.mutate()}
@@ -205,10 +205,10 @@ export default function TaskWorker({
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Map panel */}
           {showMap && showMapForTask && (
-            <div className="mb-6 h-[350px]">
+            <div className="mb-6 h-[250px] sm:h-[350px]">
               <MapPanel
                 project={project}
                 showLayers={{
@@ -258,7 +258,7 @@ export default function TaskWorker({
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 Kontext aus vorherigen Phasen
               </p>
-              <div className="max-h-80 overflow-y-auto space-y-1">
+              <div className="max-h-60 overflow-y-auto space-y-1 sm:max-h-80">
                 {prevEntries.map((e, i) => (
                   <p key={i} className="text-xs text-blue-800">
                     <span className="font-medium">{e.label}:</span>{" "}
@@ -411,11 +411,11 @@ export default function TaskWorker({
 
         {/* Footer */}
         {!isDone && (
-          <div className="flex items-center justify-between border-t border-gray-100 p-6">
+          <div className="flex flex-col-reverse gap-3 border-t border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <button
               onClick={() => saveMutation.mutate()}
               disabled={saveMutation.isPending}
-              className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 sm:w-auto sm:justify-start sm:py-2"
             >
               {saveMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -432,7 +432,7 @@ export default function TaskWorker({
                   ? "Alle Felder ausfüllen und Checkliste abhaken"
                   : undefined
               }
-              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:justify-start sm:py-2"
             >
               {completeMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

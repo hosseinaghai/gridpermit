@@ -43,7 +43,7 @@ export default function ProcessStepper({ project, template }: Props) {
               key={stage.id}
               onClick={() => selectStage(idx)}
               className={`relative flex w-full gap-3 rounded-lg pb-8 text-left transition last:pb-0 ${
-                isSelected ? "bg-blue-50/80 -mx-2 px-2 py-2" : "hover:bg-gray-50 -mx-2 px-2 py-1"
+                isSelected ? "bg-blue-50/80 -mx-2 px-2 py-2.5" : "hover:bg-gray-50 -mx-2 px-2 py-2"
               }`}
             >
               {/* Connector line */}

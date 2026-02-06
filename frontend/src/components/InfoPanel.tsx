@@ -56,7 +56,7 @@ export default function InfoPanel({ project, stage }: Props) {
             Trassenübersicht
           </h3>
         </div>
-        <div className="mt-3 h-48">
+        <div className="mt-3 h-40 sm:h-48">
           <MapPanel
             project={project}
             showLayers={{
