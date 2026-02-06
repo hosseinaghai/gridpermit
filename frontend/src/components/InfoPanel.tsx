@@ -1,7 +1,6 @@
 import {
   AlertTriangle,
   BookOpen,
-  Calendar,
   Clock,
   FileText,
   Layers,
@@ -45,12 +44,6 @@ const docStatusStyles: Record<string, { label: string; color: string }> = {
   needs_revision: { label: "Überarbeitung", color: "bg-amber-100 text-amber-700" },
   draft: { label: "Entwurf", color: "bg-gray-100 text-gray-600" },
 };
-
-function daysUntil(dateStr: string): number {
-  const target = new Date(dateStr);
-  const now = new Date();
-  return Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-}
 
 export default function InfoPanel({ project, stage }: Props) {
   return (
@@ -99,55 +92,6 @@ export default function InfoPanel({ project, stage }: Props) {
           </p>
         </div>
       </div>
-
-      {/* Deadlines */}
-      {project.project_tasks && project.project_tasks.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 text-gray-400">
-            <Calendar className="h-4 w-4" />
-            <h3 className="text-xs font-semibold uppercase tracking-wider">
-              Fristen
-            </h3>
-          </div>
-          <div className="mt-3 space-y-2">
-            {project.project_tasks.map((t) => {
-              const days = daysUntil(t.due_date);
-              return (
-                <div
-                  key={t.task_id}
-                  className={`rounded-lg border p-3 ${
-                    days <= 3
-                      ? "border-red-200 bg-red-50"
-                      : days <= 7
-                        ? "border-amber-200 bg-amber-50"
-                        : "border-gray-100 bg-gray-50"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gray-800">
-                      {t.title}
-                    </span>
-                    <span
-                      className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                        days <= 3
-                          ? "bg-red-200 text-red-800"
-                          : days <= 7
-                            ? "bg-amber-200 text-amber-800"
-                            : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      {days <= 0 ? "Überfällig!" : `${days} Tage`}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-[10px] text-gray-500">
-                    Frist: {t.due_date} &middot; {t.owner_role}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* Historical cases */}
       {project.historical_cases.length > 0 && (

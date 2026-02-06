@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { ProcessTemplate, Project } from "../types";
 import { useWorkflowStore } from "../store/workflowStore";
 import EmailInbox from "./EmailInbox";
+import Impressum from "./Impressum";
 import InfoPanel from "./InfoPanel";
 import ProcessStepper from "./ProcessStepper";
 import WorkflowWizard from "./WorkflowWizard";
@@ -16,6 +17,7 @@ export default function Layout({ project, template }: Props) {
   const selectedStageIndex = useWorkflowStore((s) => s.selectedStageIndex);
   const selectedStageTpl = template.stages[selectedStageIndex] ?? null;
   const [emailOpen, setEmailOpen] = useState(false);
+  const [impressumOpen, setImpressumOpen] = useState(false);
 
   // Count unread emails (mock)
   const unreadEmails = 3;
@@ -79,6 +81,19 @@ export default function Layout({ project, template }: Props) {
         )}
       </div>
 
+      {/* Footer */}
+      <footer className="flex items-center justify-between border-t border-gray-200 bg-white px-6 py-2">
+        <span className="text-xs text-gray-400">
+          &copy; {new Date().getFullYear()} Hossein Aghai. Alle Rechte vorbehalten.
+        </span>
+        <button
+          onClick={() => setImpressumOpen(true)}
+          className="text-xs text-gray-400 underline hover:text-gray-600"
+        >
+          Impressum
+        </button>
+      </footer>
+
       {/* Email inbox overlay */}
       <EmailInbox
         project={project}
@@ -86,6 +101,9 @@ export default function Layout({ project, template }: Props) {
         isOpen={emailOpen}
         onClose={() => setEmailOpen(false)}
       />
+
+      {/* Impressum overlay */}
+      <Impressum isOpen={impressumOpen} onClose={() => setImpressumOpen(false)} />
     </div>
   );
 }
