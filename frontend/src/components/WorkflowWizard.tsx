@@ -304,8 +304,7 @@ export default function WorkflowWizard({ project, template }: Props) {
                         );
                         if (!tTpl) return null;
                         const entries = Object.entries(task.form_data)
-                          .filter(([, v]) => v)
-                          .slice(0, 2);
+                          .filter(([, v]) => v);
                         return (
                           <div
                             key={task.id}
@@ -326,9 +325,7 @@ export default function WorkflowWizard({ project, template }: Props) {
                                   <span className="font-medium text-gray-600">
                                     {fieldTpl?.label ?? key}:
                                   </span>{" "}
-                                  {val.length > 80
-                                    ? val.slice(0, 80) + "..."
-                                    : val}
+                                  {val}
                                 </p>
                               );
                             })}

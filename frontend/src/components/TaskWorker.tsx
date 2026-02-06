@@ -258,18 +258,13 @@ export default function TaskWorker({
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 Kontext aus vorherigen Phasen
               </p>
-              <div className="max-h-40 overflow-y-auto space-y-1">
-                {prevEntries.slice(0, 8).map((e, i) => (
+              <div className="max-h-80 overflow-y-auto space-y-1">
+                {prevEntries.map((e, i) => (
                   <p key={i} className="text-xs text-blue-800">
                     <span className="font-medium">{e.label}:</span>{" "}
-                    {e.value.length > 100 ? e.value.slice(0, 100) + "..." : e.value}
+                    {e.value}
                   </p>
                 ))}
-                {prevEntries.length > 8 && (
-                  <p className="text-xs text-blue-500 italic">
-                    +{prevEntries.length - 8} weitere Einträge
-                  </p>
-                )}
               </div>
             </div>
           )}
