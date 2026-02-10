@@ -1,0 +1,322 @@
+import { useWorkflowStore } from "../store/workflowStore";
+
+export type Language = "de" | "en";
+
+const de: Record<string, string> = {
+  // ── App.tsx ──────────────────────────────────────────────────────────
+  "app.noProject": "Kein Projekt ausgewählt.",
+  "app.loading": "Workflow wird geladen...",
+  "app.errorLoading": "Fehler beim Laden:",
+  "app.unknownError": "Unbekannter Fehler",
+
+  // ── Layout.tsx ───────────────────────────────────────────────────────
+  "layout.openSteps": "Verfahrensschritte öffnen",
+  "layout.openInfoPanel": "Info-Panel öffnen",
+  "layout.emailInbox": "E-Mail-Eingang",
+  "layout.navigation": "Navigation",
+  "layout.information": "Informationen",
+  "layout.allRightsReserved": "Alle Rechte vorbehalten.",
+  "layout.legalNotice": "Impressum",
+  "layout.impressum": "Impressum",
+
+  // ── ProcessStepper.tsx ───────────────────────────────────────────────
+  "stepper.processSteps": "Verfahrensschritte",
+  "stepper.heading": "Verfahrensschritte",
+
+  // ── WorkflowWizard.tsx ───────────────────────────────────────────────
+  "wizard.phaseNotFound": "Phase nicht gefunden.",
+  "wizard.stageNotFound": "Phase nicht gefunden.",
+  "wizard.overallProgress": "Gesamtfortschritt",
+  "wizard.tasks": "Aufgaben",
+  "wizard.currentPhase": "Aktuelle Phase",
+  "wizard.completed": "erledigt",
+  "wizard.upcomingDeadlines": "Nächste Fristen",
+  "wizard.nextDeadlines": "Nächste Fristen",
+  "wizard.overdue": "Überfällig!",
+  "wizard.noDeadlines": "Keine Fristen",
+  "wizard.allPhasesCompleted": "Alle Phasen abgeschlossen!",
+  "wizard.allPhasesComplete": "Alle Phasen abgeschlossen!",
+  "wizard.congratulations": "Herzlichen Glückwunsch – alle Aufgaben wurden erledigt.",
+  "wizard.allPhasesCongrats": "Herzlichen Glückwunsch – alle Aufgaben wurden erledigt.",
+  "wizard.phaseComplete": "Phase \"{title}\" abgeschlossen!",
+  "wizard.phaseCompleteNext": "Alle Aufgaben dieser Phase sind erledigt. Weiter zur nächsten Phase!",
+  "wizard.statusCompleted": "Abgeschlossen",
+  "wizard.stageCompleted": "Abgeschlossen",
+  "wizard.statusInProgress": "In Bearbeitung",
+  "wizard.stageActive": "In Bearbeitung",
+  "wizard.statusNotStarted": "Noch nicht begonnen",
+  "wizard.stagePending": "Noch nicht begonnen",
+  "wizard.phase": "Phase",
+  "wizard.blocker": "Blocker:",
+  "wizard.severity": "Schweregrad:",
+  "wizard.responsible": "Verantwortlich:",
+  "wizard.previousResults": "Ergebnisse vorheriger Phasen",
+  "wizard.nextStepLabel": "Nächster Schritt:",
+  "wizard.allTasksCompleted": "Alle Aufgaben erledigt",
+  "wizard.allTasksDone": "Alle Aufgaben erledigt",
+  "wizard.editTask": "Aufgabe bearbeiten",
+  "wizard.nextStepBadge": "Nächster Schritt",
+  "wizard.fields": "Felder",
+  "wizard.items": "Punkte",
+  "wizard.aiSupport": "KI-Unterstützung",
+  "wizard.view": "Ansehen",
+  "wizard.edit": "Bearbeiten",
+  "wizard.statusDone": "Erledigt",
+  "wizard.statusInProgressShort": "In Bearbeitung",
+  "wizard.statusPending": "Offen",
+  "wizard.statusOpen": "Offen",
+  "wizard.phaseCelebration": "Phase \"{title}\" abgeschlossen!",
+
+  // ── TaskWorker.tsx ───────────────────────────────────────────────────
+  "task.backToOverview": "Zurück zur Übersicht",
+  "task.done": "Erledigt",
+  "task.reopen": "Wieder öffnen",
+  "task.map": "Karte",
+  "task.hide": "ausblenden",
+  "task.show": "anzeigen",
+  "task.corridorB": "Korridor B",
+  "task.corridorA": "Korridor A",
+  "task.ffh": "FFH",
+  "task.forest": "Wald",
+  "task.wpa": "WSG",
+  "task.railway": "Bahntrasse",
+  "task.previousContext": "Kontext aus vorherigen Phasen",
+  "task.clearField": "Feld leeren",
+  "task.ai": "KI",
+  "task.checklist": "Checkliste",
+  "task.documents": "Dokumente",
+  "task.attachDocument": "Dokument anhängen",
+  "task.fillAllFields": "Alle Felder ausfüllen und Checkliste abhaken",
+  "task.save": "Zwischenspeichern",
+  "task.markComplete": "Als erledigt markieren",
+
+  // ── InfoPanel.tsx ────────────────────────────────────────────────────
+  "info.routeOverview": "Trassenübersicht",
+  "info.legalContext": "Rechtlicher Kontext",
+  "info.comparableCases": "Vergleichbare Fälle",
+  "info.risks": "Risiken",
+  "info.geoLayers": "Geo-Layer",
+  "info.documents": "Dokumente",
+  "info.approvedWithConditions": "Genehmigt (m. Auflagen)",
+  "info.outcomeGrantedConditions": "Genehmigt (m. Auflagen)",
+  "info.delayed": "Verzögert",
+  "info.outcomeDelayed": "Verzögert",
+  "info.approved": "Genehmigt",
+  "info.outcomeGranted": "Genehmigt",
+  "info.rejected": "Abgelehnt",
+  "info.outcomeRejected": "Abgelehnt",
+  "info.speciesProtection": "Artenschutz",
+  "info.riskBiodiversity": "Artenschutz",
+  "info.landRights": "Wegerechte",
+  "info.riskLandRights": "Wegerechte",
+  "info.schedule": "Zeitplan",
+  "info.riskSchedule": "Zeitplan",
+  "info.technical": "Technik",
+  "info.riskTechnical": "Technik",
+  "info.statusApproved": "Freigegeben",
+  "info.docApproved": "Freigegeben",
+  "info.statusRevision": "Überarbeitung",
+  "info.docRevision": "Überarbeitung",
+  "info.statusDraft": "Entwurf",
+  "info.docDraft": "Entwurf",
+  "info.score": "Score:",
+  "info.owner": "Verantw.:",
+
+  // ── MapPanel.tsx ─────────────────────────────────────────────────────
+  "map.undergroundCableShare": "Erdkabelanteil",
+  "map.mainlyOverheadLine": "überwiegend Freileitung",
+  "map.mainlyOverhead": "überwiegend Freileitung",
+  "map.crossing": "Querung",
+  "map.forestCrossing": "Waldquerung",
+  "map.edgeContact": "Randberührung",
+  "map.bundlingPotential": "Bündelungspotenzial mit Trassenführung",
+  "map.owner": "Eigentümer:",
+  "map.settlementDistance": "Siedlungsabstand:",
+
+  // ── DocumentUpload.tsx ───────────────────────────────────────────────
+  "upload.dragOrSelect": "Datei hierher ziehen oder",
+  "upload.browse": "auswählen",
+  "upload.allowedFormats": "PDF, DOC, XLS, Bilder, GeoJSON",
+  "upload.fileTypes": "PDF, DOC, XLS, Bilder, GeoJSON",
+
+  // ── EmailInbox.tsx ───────────────────────────────────────────────────
+  "email.inbox": "E-Mail-Eingang",
+  "email.aiAssignment": "KI-Zuordnung",
+  "email.phase": "Phase:",
+  "email.assignAndFile": "Zuordnen & Ablegen",
+  "email.fileAndAssign": "Zuordnen & Ablegen",
+  "email.filedIn": "Abgelegt in:",
+
+  // ── Impressum.tsx ────────────────────────────────────────────────────
+  "impressum.germanLawNote":
+    "This legal notice (Impressum) is required by German law and is provided in German only.",
+};
+
+const en: Record<string, string> = {
+  // ── App.tsx ──────────────────────────────────────────────────────────
+  "app.noProject": "No project selected.",
+  "app.loading": "Loading workflow...",
+  "app.errorLoading": "Error loading:",
+  "app.unknownError": "Unknown error",
+
+  // ── Layout.tsx ───────────────────────────────────────────────────────
+  "layout.openSteps": "Open process steps",
+  "layout.openInfoPanel": "Open info panel",
+  "layout.emailInbox": "Email inbox",
+  "layout.navigation": "Navigation",
+  "layout.information": "Information",
+  "layout.allRightsReserved": "All rights reserved.",
+  "layout.legalNotice": "Legal Notice",
+  "layout.impressum": "Legal Notice",
+
+  // ── ProcessStepper.tsx ───────────────────────────────────────────────
+  "stepper.processSteps": "Process Steps",
+  "stepper.heading": "Process Steps",
+
+  // ── WorkflowWizard.tsx ───────────────────────────────────────────────
+  "wizard.phaseNotFound": "Phase not found.",
+  "wizard.stageNotFound": "Phase not found.",
+  "wizard.overallProgress": "Overall Progress",
+  "wizard.tasks": "tasks",
+  "wizard.currentPhase": "Current Phase",
+  "wizard.completed": "completed",
+  "wizard.upcomingDeadlines": "Upcoming Deadlines",
+  "wizard.nextDeadlines": "Upcoming Deadlines",
+  "wizard.overdue": "Overdue!",
+  "wizard.noDeadlines": "No deadlines",
+  "wizard.allPhasesCompleted": "All phases completed!",
+  "wizard.allPhasesComplete": "All phases completed!",
+  "wizard.congratulations": "Congratulations – all tasks have been completed.",
+  "wizard.allPhasesCongrats": "Congratulations – all tasks have been completed.",
+  "wizard.phaseComplete": "Phase \"{title}\" completed!",
+  "wizard.phaseCompleteNext": "All tasks in this phase are complete. Proceed to the next phase!",
+  "wizard.statusCompleted": "Completed",
+  "wizard.stageCompleted": "Completed",
+  "wizard.statusInProgress": "In Progress",
+  "wizard.stageActive": "In Progress",
+  "wizard.statusNotStarted": "Not yet started",
+  "wizard.stagePending": "Not yet started",
+  "wizard.phase": "Phase",
+  "wizard.blocker": "Blocker:",
+  "wizard.severity": "Severity:",
+  "wizard.responsible": "Responsible:",
+  "wizard.previousResults": "Results from Previous Phases",
+  "wizard.nextStepLabel": "Next Step:",
+  "wizard.allTasksCompleted": "All tasks completed",
+  "wizard.allTasksDone": "All tasks completed",
+  "wizard.editTask": "Edit task",
+  "wizard.nextStepBadge": "Next Step",
+  "wizard.fields": "fields",
+  "wizard.items": "items",
+  "wizard.aiSupport": "AI Support",
+  "wizard.view": "View",
+  "wizard.edit": "Edit",
+  "wizard.statusDone": "Done",
+  "wizard.statusInProgressShort": "In Progress",
+  "wizard.statusPending": "Open",
+  "wizard.statusOpen": "Open",
+  "wizard.phaseCelebration": "Phase \"{title}\" completed!",
+
+  // ── TaskWorker.tsx ───────────────────────────────────────────────────
+  "task.backToOverview": "Back to overview",
+  "task.done": "Done",
+  "task.reopen": "Reopen",
+  "task.map": "Map",
+  "task.hide": "hide",
+  "task.show": "show",
+  "task.corridorB": "Corridor B",
+  "task.corridorA": "Corridor A",
+  "task.ffh": "FFH",
+  "task.forest": "Forest",
+  "task.wpa": "WPA",
+  "task.railway": "Railway",
+  "task.previousContext": "Context from Previous Phases",
+  "task.clearField": "Clear field",
+  "task.ai": "AI",
+  "task.checklist": "Checklist",
+  "task.documents": "Documents",
+  "task.attachDocument": "Attach document",
+  "task.fillAllFields": "Fill all fields and check all items",
+  "task.save": "Save Draft",
+  "task.markComplete": "Mark as Complete",
+
+  // ── InfoPanel.tsx ────────────────────────────────────────────────────
+  "info.routeOverview": "Route Overview",
+  "info.legalContext": "Legal Context",
+  "info.comparableCases": "Comparable Cases",
+  "info.risks": "Risks",
+  "info.geoLayers": "Geo Layers",
+  "info.documents": "Documents",
+  "info.approvedWithConditions": "Approved (w/ conditions)",
+  "info.outcomeGrantedConditions": "Approved (w/ conditions)",
+  "info.delayed": "Delayed",
+  "info.outcomeDelayed": "Delayed",
+  "info.approved": "Approved",
+  "info.outcomeGranted": "Approved",
+  "info.rejected": "Rejected",
+  "info.outcomeRejected": "Rejected",
+  "info.speciesProtection": "Species Protection",
+  "info.riskBiodiversity": "Species Protection",
+  "info.landRights": "Land Rights",
+  "info.riskLandRights": "Land Rights",
+  "info.schedule": "Schedule",
+  "info.riskSchedule": "Schedule",
+  "info.technical": "Technical",
+  "info.riskTechnical": "Technical",
+  "info.statusApproved": "Approved",
+  "info.docApproved": "Approved",
+  "info.statusRevision": "Revision",
+  "info.docRevision": "Revision",
+  "info.statusDraft": "Draft",
+  "info.docDraft": "Draft",
+  "info.score": "Score:",
+  "info.owner": "Owner:",
+
+  // ── MapPanel.tsx ─────────────────────────────────────────────────────
+  "map.undergroundCableShare": "Underground cable share",
+  "map.mainlyOverheadLine": "mainly overhead line",
+  "map.mainlyOverhead": "mainly overhead line",
+  "map.crossing": "crossing",
+  "map.forestCrossing": "forest crossing",
+  "map.edgeContact": "edge contact",
+  "map.bundlingPotential": "Bundling potential with route alignment",
+  "map.owner": "Owner:",
+  "map.settlementDistance": "Settlement distance:",
+
+  // ── DocumentUpload.tsx ───────────────────────────────────────────────
+  "upload.dragOrSelect": "Drag file here or",
+  "upload.browse": "browse",
+  "upload.allowedFormats": "PDF, DOC, XLS, images, GeoJSON",
+  "upload.fileTypes": "PDF, DOC, XLS, images, GeoJSON",
+
+  // ── EmailInbox.tsx ───────────────────────────────────────────────────
+  "email.inbox": "Email Inbox",
+  "email.aiAssignment": "AI Assignment",
+  "email.phase": "Phase:",
+  "email.assignAndFile": "Assign & File",
+  "email.fileAndAssign": "Assign & File",
+  "email.filedIn": "Filed in:",
+
+  // ── Impressum.tsx ────────────────────────────────────────────────────
+  "impressum.germanLawNote":
+    "This legal notice (Impressum) is required by German law and is provided in German only.",
+};
+
+const dictionaries: Record<Language, Record<string, string>> = { de, en };
+
+export function useT() {
+  const lang = useWorkflowStore((s) => s.language);
+  const dict = dictionaries[lang];
+  return function t(
+    key: string,
+    replacements?: Record<string, string | number>,
+  ): string {
+    let text = dict[key] ?? key;
+    if (replacements) {
+      for (const [k, v] of Object.entries(replacements)) {
+        text = text.split(`{${k}}`).join(String(v));
+      }
+    }
+    return text;
+  };
+}

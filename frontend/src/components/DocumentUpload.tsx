@@ -1,5 +1,6 @@
-import { FileUp, Paperclip, Trash2, X } from "lucide-react";
+import { FileUp, Paperclip, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useT } from "../i18n/translations";
 
 interface UploadedFile {
   id: string;
@@ -25,6 +26,7 @@ export default function DocumentUpload({
 }: Props) {
   const [files, setFiles] = useState<UploadedFile[]>(existingFiles);
   const [dragOver, setDragOver] = useState(false);
+  const t = useT();
 
   const handleFiles = (fileList: FileList) => {
     const newFiles: UploadedFile[] = Array.from(fileList).map((f) => ({
@@ -75,9 +77,9 @@ export default function DocumentUpload({
         >
           <FileUp className="h-6 w-6 text-gray-400" />
           <p className="text-xs text-gray-500">
-            Datei hierher ziehen oder{" "}
+            {t("upload.dragOrSelect")}{" "}
             <label className="cursor-pointer font-medium text-blue-600 hover:text-blue-700">
-              auswählen
+              {t("upload.browse")}
               <input
                 type="file"
                 className="hidden"
@@ -88,7 +90,7 @@ export default function DocumentUpload({
             </label>
           </p>
           <p className="text-[10px] text-gray-400">
-            PDF, DOC, XLS, Bilder, GeoJSON
+            {t("upload.fileTypes")}
           </p>
         </div>
       )}

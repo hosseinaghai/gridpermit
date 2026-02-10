@@ -66,7 +66,7 @@ class TaskInstance(BaseModel):
     template_id: str
     status: TaskStatus = TaskStatus.PENDING
     form_data: dict = Field(default_factory=dict)
-    completed_checklist: list[str] = Field(default_factory=list)
+    completed_checklist: list[int] = Field(default_factory=list)
     updated_at: Optional[datetime] = None
 
 
@@ -205,7 +205,7 @@ class ProjectCreateRequest(BaseModel):
 
 class TaskCompleteRequest(BaseModel):
     form_data: dict = Field(default_factory=dict)
-    completed_checklist: list[str] = Field(default_factory=list)
+    completed_checklist: list[int] = Field(default_factory=list)
 
 
 class AIFieldRequest(BaseModel):
@@ -213,6 +213,7 @@ class AIFieldRequest(BaseModel):
     task_instance_id: str
     field_name: str
     field_label: str
+    lang: str = "de"
 
 
 class AIFieldResponse(BaseModel):

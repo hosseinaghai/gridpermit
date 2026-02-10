@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import type { ProcessTemplate, Project } from "../types";
+import { useT } from "../i18n/translations";
+import { useWorkflowStore } from "../store/workflowStore";
 
 export interface Email {
   id: string;
@@ -158,6 +160,8 @@ interface Props {
 export default function EmailInbox({ project, template, isOpen, onClose }: Props) {
   const [emails, setEmails] = useState<Email[]>(MOCK_EMAILS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const t = useT();
+  const language = useWorkflowStore((s) => s.language);
 
   if (!isOpen) return null;
 
@@ -188,7 +192,7 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
         <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-5 sm:py-4">
           <div className="flex items-center gap-3">
             <Inbox className="h-5 w-5 text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-900">E-Mail-Eingang</h2>
+            <h2 className="text-lg font-bold text-gray-900">{t("email.inbox")}</h2>
             {unreadCount > 0 && (
               <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
                 {unreadCount}
@@ -236,12 +240,15 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
                         {email.from}
                       </span>
                       <span className="text-[10px] text-gray-400">
-                        {new Date(email.received_at).toLocaleDateString("de-DE", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {new Date(email.received_at).toLocaleDateString(
+                          language === "de" ? "de-DE" : "en-US",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
                       </span>
                     </div>
                     <p
@@ -272,14 +279,14 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
                         <div className="flex items-center gap-2">
                           <Sparkles className="h-4 w-4 text-violet-600" />
                           <span className="text-xs font-semibold text-violet-800">
-                            KI-Zuordnung
+                            {t("email.aiAssignment")}
                           </span>
                           <span className="ml-auto rounded-full bg-violet-200 px-2 py-0.5 text-[10px] font-bold text-violet-700">
                             {Math.round(email.ai_suggestion.confidence * 100)}%
                           </span>
                         </div>
                         <p className="mt-1 text-xs text-violet-700">
-                          <span className="font-medium">Phase:</span>{" "}
+                          <span className="font-medium">{t("email.phase")}</span>{" "}
                           {email.ai_suggestion.stage_title} &rarr;{" "}
                           <span className="font-medium">{email.ai_suggestion.task_title}</span>
                         </p>
@@ -294,7 +301,7 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
                           className="mt-2 flex items-center gap-1.5 rounded-md bg-violet-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-violet-700"
                         >
                           <ArrowRight className="h-3.5 w-3.5" />
-                          Zuordnen & Ablegen
+                          {t("email.fileAndAssign")}
                         </button>
                       </div>
                     )}
@@ -302,7 +309,7 @@ export default function EmailInbox({ project, template, isOpen, onClose }: Props
                     {email.filed && (
                       <div className="mt-3 flex items-center gap-2 text-xs text-emerald-700">
                         <Check className="h-4 w-4" />
-                        Abgelegt in: {email.ai_suggestion?.stage_title} &rarr;{" "}
+                        {t("email.filedIn")} {email.ai_suggestion?.stage_title} &rarr;{" "}
                         {email.ai_suggestion?.task_title}
                       </div>
                     )}

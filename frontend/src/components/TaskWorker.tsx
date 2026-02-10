@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { completeTask, generateFieldText, reopenTask, saveTask } from "../api/client";
+import { useT } from "../i18n/translations";
+import { useWorkflowStore } from "../store/workflowStore";
 import type {
   FormField,
   ProcessTemplate,
@@ -46,10 +48,12 @@ export default function TaskWorker({
   onClose,
 }: Props) {
   const queryClient = useQueryClient();
+  const t = useT();
+  const language = useWorkflowStore((s) => s.language);
   const [formData, setFormData] = useState<Record<string, string>>(
     taskInstance.form_data
   );
-  const [checklist, setChecklist] = useState<string[]>(
+  const [checklist, setChecklist] = useState<number[]>(
     taskInstance.completed_checklist
   );
   const [loadingField, setLoadingField] = useState<string | null>(null);
@@ -65,9 +69,9 @@ export default function TaskWorker({
     setFormData((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const toggleChecklistItem = (item: string) => {
+  const toggleChecklistItem = (idx: number) => {
     setChecklist((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
     );
   };
 
@@ -78,7 +82,8 @@ export default function TaskWorker({
         taskInstance.id,
         project.id,
         field.name,
-        field.label
+        field.label,
+        language
       );
       updateField(field.name, res.text);
     } catch {
@@ -90,14 +95,14 @@ export default function TaskWorker({
 
   const saveMutation = useMutation({
     mutationFn: () =>
-      saveTask(taskInstance.id, project.id, formData, checklist),
+      saveTask(taskInstance.id, project.id, formData, checklist, language),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["workflow", project.id] }),
   });
 
   const completeMutation = useMutation({
     mutationFn: () =>
-      completeTask(taskInstance.id, project.id, formData, checklist),
+      completeTask(taskInstance.id, project.id, formData, checklist, language),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workflow", project.id] });
       setIsDone(true);
@@ -105,7 +110,7 @@ export default function TaskWorker({
   });
 
   const reopenMutation = useMutation({
-    mutationFn: () => reopenTask(taskInstance.id, project.id),
+    mutationFn: () => reopenTask(taskInstance.id, project.id, language),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workflow", project.id] });
       setIsDone(false);
@@ -114,7 +119,7 @@ export default function TaskWorker({
 
   const checklistComplete =
     taskTemplate.checklist.length === 0 ||
-    taskTemplate.checklist.every((item) => checklist.includes(item));
+    checklist.length === taskTemplate.checklist.length;
 
   const formFieldsFilled =
     taskTemplate.form_fields.length === 0 ||
@@ -155,7 +160,7 @@ export default function TaskWorker({
         className="-ml-2 mb-4 flex items-center gap-1.5 rounded-lg px-2 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700"
       >
         <ArrowLeft className="h-4 w-4" />
-        Zurück zur Übersicht
+        {t("task.backToOverview")}
       </button>
 
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -166,7 +171,7 @@ export default function TaskWorker({
             </h2>
             {isDone && (
               <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                Erledigt
+                {t("task.done")}
               </span>
             )}
           </div>
@@ -186,7 +191,7 @@ export default function TaskWorker({
                 ) : (
                   <RotateCcw className="h-3.5 w-3.5" />
                 )}
-                Wieder öffnen
+                {t("task.reopen")}
               </button>
             )}
             {showMapForTask && (
@@ -199,7 +204,7 @@ export default function TaskWorker({
                 }`}
               >
                 <Map className="h-3.5 w-3.5" />
-                Karte {showMap ? "ausblenden" : "anzeigen"}
+                {t("task.map")} {showMap ? t("task.hide") : t("task.show")}
               </button>
             )}
           </div>
@@ -225,27 +230,27 @@ export default function TaskWorker({
               <div className="mt-2 flex flex-wrap gap-3 text-[10px] text-gray-500">
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-0.5 w-4 bg-blue-600" style={{ borderTop: "2px dashed #2563eb" }} />
-                  Korridor B
+                  {t("task.corridorB")}
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-0.5 w-4 bg-gray-400" style={{ borderTop: "1px dashed #9ca3af" }} />
-                  Korridor A
+                  {t("task.corridorA")}
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-2.5 w-2.5 rounded-sm bg-green-500/30 border border-green-600" />
-                  FFH
+                  {t("task.ffh")}
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-2.5 w-2.5 rounded-sm bg-green-800/20 border border-green-800" />
-                  Wald
+                  {t("task.forest")}
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-2.5 w-2.5 rounded-sm bg-blue-500/20 border border-blue-600" />
-                  WSG
+                  {t("task.wpa")}
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-0.5 w-4 bg-stone-500" style={{ borderTop: "2px dotted #78716c" }} />
-                  Bahntrasse
+                  {t("task.railway")}
                 </span>
               </div>
             </div>
@@ -256,7 +261,7 @@ export default function TaskWorker({
             <div className="mb-6 rounded-lg border border-blue-100 bg-blue-50/50 p-4">
               <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-600">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                Kontext aus vorherigen Phasen
+                {t("task.previousContext")}
               </p>
               <div className="max-h-60 overflow-y-auto space-y-1 sm:max-h-80">
                 {prevEntries.map((e, i) => (
@@ -289,7 +294,7 @@ export default function TaskWorker({
                           <button
                             onClick={() => clearField(field.name)}
                             className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-gray-400 transition hover:bg-red-50 hover:text-red-500"
-                            title="Feld leeren"
+                            title={t("task.clearField")}
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
@@ -305,7 +310,7 @@ export default function TaskWorker({
                             ) : (
                               <Sparkles className="h-3.5 w-3.5" />
                             )}
-                            KI
+                            {t("task.ai")}
                           </button>
                         )}
                       </div>
@@ -337,18 +342,18 @@ export default function TaskWorker({
           {taskTemplate.checklist.length > 0 && (
             <div className="mt-6">
               <h3 className="mb-3 text-sm font-semibold text-gray-700">
-                Checkliste
+                {t("task.checklist")}
               </h3>
               <div className="space-y-2">
-                {taskTemplate.checklist.map((item) => {
-                  const checked = checklist.includes(item);
+                {taskTemplate.checklist.map((item, idx) => {
+                  const checked = checklist.includes(idx);
                   const uploadKey = `checklist-${item}`;
                   const isUploadOpen = showUploads[uploadKey] ?? false;
                   return (
                     <div key={item}>
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => !isDone && toggleChecklistItem(item)}
+                          onClick={() => !isDone && toggleChecklistItem(idx)}
                           disabled={isDone}
                           className="flex flex-1 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 text-left transition hover:bg-gray-50 disabled:cursor-default"
                         >
@@ -379,7 +384,7 @@ export default function TaskWorker({
                               ? "border-blue-300 bg-blue-50 text-blue-600"
                               : "border-gray-200 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
                           }`}
-                          title="Dokument anhängen"
+                          title={t("task.attachDocument")}
                         >
                           <Upload className="h-4 w-4" />
                         </button>
@@ -403,7 +408,7 @@ export default function TaskWorker({
           {/* General document upload */}
           <div className="mt-6">
             <h3 className="mb-3 text-sm font-semibold text-gray-700">
-              Dokumente
+              {t("task.documents")}
             </h3>
             <DocumentUpload taskId={taskInstance.id} disabled={isDone} />
           </div>
@@ -422,14 +427,14 @@ export default function TaskWorker({
               ) : (
                 <Save className="h-4 w-4" />
               )}
-              Zwischenspeichern
+              {t("task.save")}
             </button>
             <button
               onClick={() => completeMutation.mutate()}
               disabled={!canComplete || completeMutation.isPending}
               title={
                 !canComplete
-                  ? "Alle Felder ausfüllen und Checkliste abhaken"
+                  ? t("task.fillAllFields")
                   : undefined
               }
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:justify-start sm:py-2"
@@ -439,7 +444,7 @@ export default function TaskWorker({
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              Als erledigt markieren
+              {t("task.markComplete")}
             </button>
           </div>
         )}

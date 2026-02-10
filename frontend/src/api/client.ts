@@ -1,3 +1,4 @@
+import type { Language } from "../i18n/translations";
 import type { AIFieldResponse, Project, WorkflowResponse } from "../types";
 
 const BASE = "/api";
@@ -14,8 +15,8 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
-export function fetchWorkflow(projectId: string) {
-  return request<WorkflowResponse>(`/project/${projectId}/workflow`);
+export function fetchWorkflow(projectId: string, lang: Language = "de") {
+  return request<WorkflowResponse>(`/project/${projectId}/workflow?lang=${lang}`);
 }
 
 export function fetchProjects() {
@@ -26,10 +27,11 @@ export function completeTask(
   taskId: string,
   projectId: string,
   formData: Record<string, string>,
-  completedChecklist: string[]
+  completedChecklist: number[],
+  lang: Language = "de"
 ) {
   return request<{ status: string; project: Project }>(
-    `/task/${taskId}/complete?project_id=${projectId}`,
+    `/task/${taskId}/complete?project_id=${projectId}&lang=${lang}`,
     {
       method: "POST",
       body: JSON.stringify({
@@ -44,10 +46,11 @@ export function saveTask(
   taskId: string,
   projectId: string,
   formData: Record<string, string>,
-  completedChecklist: string[]
+  completedChecklist: number[],
+  lang: Language = "de"
 ) {
   return request<{ status: string }>(
-    `/task/${taskId}/save?project_id=${projectId}`,
+    `/task/${taskId}/save?project_id=${projectId}&lang=${lang}`,
     {
       method: "POST",
       body: JSON.stringify({
@@ -58,8 +61,8 @@ export function saveTask(
   );
 }
 
-export function reopenTask(taskId: string, projectId: string) {
-  return request<{ status: string }>(`/task/${taskId}/reopen?project_id=${projectId}`, {
+export function reopenTask(taskId: string, projectId: string, lang: Language = "de") {
+  return request<{ status: string }>(`/task/${taskId}/reopen?project_id=${projectId}&lang=${lang}`, {
     method: "PATCH",
   });
 }
@@ -68,7 +71,8 @@ export function generateFieldText(
   taskInstanceId: string,
   projectId: string,
   fieldName: string,
-  fieldLabel: string
+  fieldLabel: string,
+  lang: Language = "de"
 ) {
   return request<AIFieldResponse>("/ai/generate-field", {
     method: "POST",
@@ -77,6 +81,7 @@ export function generateFieldText(
       project_id: projectId,
       field_name: fieldName,
       field_label: fieldLabel,
+      lang,
     }),
   });
 }

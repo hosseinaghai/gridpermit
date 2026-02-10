@@ -37,7 +37,7 @@ export interface TaskInstance {
   template_id: string;
   status: TaskStatus;
   form_data: Record<string, string>;
-  completed_checklist: string[];
+  completed_checklist: number[];
   updated_at: string | null;
 }
 

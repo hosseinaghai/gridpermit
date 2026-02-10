@@ -10,6 +10,7 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import type { Project } from "../types";
+import { useT } from "../i18n/translations";
 
 // Fix default marker icons for Leaflet + bundlers
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
@@ -174,12 +175,12 @@ const railwayLine: GeoJSON.FeatureCollection = {
   ],
 };
 
-const parcels: { id: string; pos: [number, number]; label: string; owner: string }[] = [
+const parcelsData: { id: string; pos: [number, number]; label: string; owner: string }[] = [
   { id: "BY-091-223-17", pos: [50.62, 9.84], label: "Flurstück BY-091-223-17", owner: "Privat (nicht kontaktiert)" },
   { id: "HE-044-887-03", pos: [50.40, 10.00], label: "Flurstück HE-044-887-03", owner: "Kommune Demohausen" },
 ];
 
-const settlements: { name: string; pos: [number, number]; distance: string }[] = [
+const settlementsData: { name: string; pos: [number, number]; distance: string }[] = [
   { name: "Musterstadt", pos: [50.75, 9.70], distance: "320 m" },
   { name: "Demohausen", pos: [50.42, 9.98], distance: "220 m (Erdkabel)" },
   { name: "Beispielhof", pos: [50.55, 9.90], distance: "580 m" },
@@ -216,6 +217,7 @@ const settlementIcon = new L.DivIcon({
 });
 
 export default function MapPanel({ showLayers = {} }: Props) {
+  const t = useT();
   const {
     corridor = true,
     ffh = true,
@@ -247,7 +249,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
             style={{ color: "#2563eb", weight: 4, opacity: 0.8, dashArray: "10 5" }}
             onEachFeature={(feature, layer) => {
               layer.bindPopup(
-                `<strong>${feature.properties?.name}</strong><br/>72,8 km | Erdkabelanteil 35%`
+                `<strong>${feature.properties?.name}</strong><br/>72,8 km | ${t("map.undergroundCableShare")} 35%`
               );
             }}
           />
@@ -260,7 +262,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
             style={{ color: "#9ca3af", weight: 2, opacity: 0.5, dashArray: "5 10" }}
             onEachFeature={(feature, layer) => {
               layer.bindPopup(
-                `<strong>${feature.properties?.name}</strong><br/>76,3 km | überwiegend Freileitung`
+                `<strong>${feature.properties?.name}</strong><br/>76,3 km | ${t("map.mainlyOverhead")}`
               );
             }}
           />
@@ -273,7 +275,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
             style={{ color: "#16a34a", fillColor: "#22c55e", fillOpacity: 0.2, weight: 2 }}
             onEachFeature={(feature, layer) => {
               layer.bindPopup(
-                `<strong>${feature.properties?.name}</strong><br/>2,3 km Querung`
+                `<strong>${feature.properties?.name}</strong><br/>2,3 km ${t("map.crossing")}`
               );
             }}
           />
@@ -286,7 +288,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
             style={{ color: "#166534", fillColor: "#15803d", fillOpacity: 0.15, weight: 2, dashArray: "3 3" }}
             onEachFeature={(feature, layer) => {
               layer.bindPopup(
-                `<strong>${feature.properties?.name}</strong><br/>8,7 km Waldquerung`
+                `<strong>${feature.properties?.name}</strong><br/>8,7 km ${t("map.forestCrossing")}`
               );
             }}
           />
@@ -299,7 +301,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
             style={{ color: "#2563eb", fillColor: "#3b82f6", fillOpacity: 0.15, weight: 2, dashArray: "5 5" }}
             onEachFeature={(feature, layer) => {
               layer.bindPopup(
-                `<strong>${feature.properties?.name}</strong><br/>1,1 km Randberührung`
+                `<strong>${feature.properties?.name}</strong><br/>1,1 km ${t("map.edgeContact")}`
               );
             }}
           />
@@ -312,7 +314,7 @@ export default function MapPanel({ showLayers = {} }: Props) {
             style={{ color: "#78716c", weight: 3, opacity: 0.6, dashArray: "2 6" }}
             onEachFeature={(feature, layer) => {
               layer.bindPopup(
-                `<strong>${feature.properties?.name}</strong><br/>Bündelungspotenzial mit Trassenführung`
+                `<strong>${feature.properties?.name}</strong><br/>${t("map.bundlingPotential")}`
               );
             }}
           />
@@ -320,24 +322,24 @@ export default function MapPanel({ showLayers = {} }: Props) {
 
         {/* Parcels */}
         {showParcels &&
-          parcels.map((p) => (
+          parcelsData.map((p) => (
             <Marker key={p.id} position={p.pos} icon={parcelIcon}>
               <Popup>
                 <strong>{p.label}</strong>
                 <br />
-                Eigentümer: {p.owner}
+                {t("map.owner")} {p.owner}
               </Popup>
             </Marker>
           ))}
 
         {/* Settlements */}
         {showSettlements &&
-          settlements.map((s) => (
+          settlementsData.map((s) => (
             <Marker key={s.name} position={s.pos} icon={settlementIcon}>
               <Popup>
                 <strong>{s.name}</strong>
                 <br />
-                Siedlungsabstand: {s.distance}
+                {t("map.settlementDistance")} {s.distance}
               </Popup>
             </Marker>
           ))}

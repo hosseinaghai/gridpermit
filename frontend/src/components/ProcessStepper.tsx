@@ -1,5 +1,6 @@
 import { Check, ChevronRight, Circle } from "lucide-react";
 import type { ProcessTemplate, Project, StageStatus } from "../types";
+import { useT } from "../i18n/translations";
 import { useWorkflowStore } from "../store/workflowStore";
 
 interface Props {
@@ -21,11 +22,12 @@ const lineStyles: Record<StageStatus, string> = {
 
 export default function ProcessStepper({ project, template }: Props) {
   const { selectedStageIndex, selectStage } = useWorkflowStore();
+  const t = useT();
 
   return (
     <div>
       <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-gray-400">
-        Verfahrensschritte
+        {t("stepper.heading")}
       </h2>
 
       <div className="relative">

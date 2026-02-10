@@ -1,4 +1,6 @@
 import { X } from "lucide-react";
+import { useT } from "../i18n/translations";
+import { useWorkflowStore } from "../store/workflowStore";
 
 interface Props {
   isOpen: boolean;
@@ -6,6 +8,9 @@ interface Props {
 }
 
 export default function Impressum({ isOpen, onClose }: Props) {
+  const t = useT();
+  const language = useWorkflowStore((s) => s.language);
+
   if (!isOpen) return null;
 
   return (
@@ -19,6 +24,12 @@ export default function Impressum({ isOpen, onClose }: Props) {
         </button>
 
         <h2 className="text-xl font-bold text-gray-900">Impressum</h2>
+
+        {language === "en" && (
+          <p className="mt-2 rounded-md bg-blue-50 px-3 py-2 text-xs text-blue-700">
+            {t("impressum.germanLawNote")}
+          </p>
+        )}
 
         <div className="mt-6 space-y-4 text-sm text-gray-700">
           <div>
@@ -51,7 +62,7 @@ export default function Impressum({ isOpen, onClose }: Props) {
 
         <div className="mt-8 border-t border-gray-100 pt-4">
           <p className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} Hossein Aghai. Alle Rechte vorbehalten.
+            &copy; {new Date().getFullYear()} Hossein Aghai. {t("layout.allRightsReserved")}
           </p>
         </div>
       </div>

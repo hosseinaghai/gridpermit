@@ -8,22 +8,13 @@ import {
   Scale,
 } from "lucide-react";
 import type { Project, StageTemplate } from "../types";
+import { useT } from "../i18n/translations";
 import MapPanel from "./MapPanel";
 
 interface Props {
   project: Project;
   stage: StageTemplate;
 }
-
-const outcomeLabels: Record<string, { label: string; color: string }> = {
-  granted_with_conditions: {
-    label: "Genehmigt (m. Auflagen)",
-    color: "text-emerald-700 bg-emerald-50",
-  },
-  delayed: { label: "Verzögert", color: "text-amber-700 bg-amber-50" },
-  granted: { label: "Genehmigt", color: "text-emerald-700 bg-emerald-50" },
-  rejected: { label: "Abgelehnt", color: "text-red-700 bg-red-50" },
-};
 
 const riskColors: Record<string, string> = {
   biodiversity: "bg-green-500",
@@ -32,20 +23,32 @@ const riskColors: Record<string, string> = {
   technical: "bg-purple-500",
 };
 
-const riskLabels: Record<string, string> = {
-  biodiversity: "Artenschutz",
-  land_rights: "Wegerechte",
-  schedule: "Zeitplan",
-  technical: "Technik",
-};
-
-const docStatusStyles: Record<string, { label: string; color: string }> = {
-  approved_internal: { label: "Freigegeben", color: "bg-emerald-100 text-emerald-700" },
-  needs_revision: { label: "Überarbeitung", color: "bg-amber-100 text-amber-700" },
-  draft: { label: "Entwurf", color: "bg-gray-100 text-gray-600" },
-};
-
 export default function InfoPanel({ project, stage }: Props) {
+  const t = useT();
+
+  const outcomeLabels: Record<string, { label: string; color: string }> = {
+    granted_with_conditions: {
+      label: t("info.outcomeGrantedConditions"),
+      color: "text-emerald-700 bg-emerald-50",
+    },
+    delayed: { label: t("info.outcomeDelayed"), color: "text-amber-700 bg-amber-50" },
+    granted: { label: t("info.outcomeGranted"), color: "text-emerald-700 bg-emerald-50" },
+    rejected: { label: t("info.outcomeRejected"), color: "text-red-700 bg-red-50" },
+  };
+
+  const riskLabels: Record<string, string> = {
+    biodiversity: t("info.riskBiodiversity"),
+    land_rights: t("info.riskLandRights"),
+    schedule: t("info.riskSchedule"),
+    technical: t("info.riskTechnical"),
+  };
+
+  const docStatusStyles: Record<string, { label: string; color: string }> = {
+    approved_internal: { label: t("info.docApproved"), color: "bg-emerald-100 text-emerald-700" },
+    needs_revision: { label: t("info.docRevision"), color: "bg-amber-100 text-amber-700" },
+    draft: { label: t("info.docDraft"), color: "bg-gray-100 text-gray-600" },
+  };
+
   return (
     <div className="space-y-6">
       {/* Mini map */}
@@ -53,7 +56,7 @@ export default function InfoPanel({ project, stage }: Props) {
         <div className="flex items-center gap-2 text-gray-400">
           <MapPin className="h-4 w-4" />
           <h3 className="text-xs font-semibold uppercase tracking-wider">
-            Trassenübersicht
+            {t("info.routeOverview")}
           </h3>
         </div>
         <div className="mt-3 h-40 sm:h-48">
@@ -77,7 +80,7 @@ export default function InfoPanel({ project, stage }: Props) {
         <div className="flex items-center gap-2 text-gray-400">
           <BookOpen className="h-4 w-4" />
           <h3 className="text-xs font-semibold uppercase tracking-wider">
-            Rechtlicher Kontext
+            {t("info.legalContext")}
           </h3>
         </div>
         <div className="mt-3 rounded-lg border border-amber-100 bg-amber-50/50 p-4">
@@ -99,7 +102,7 @@ export default function InfoPanel({ project, stage }: Props) {
           <div className="flex items-center gap-2 text-gray-400">
             <Clock className="h-4 w-4" />
             <h3 className="text-xs font-semibold uppercase tracking-wider">
-              Vergleichbare Fälle
+              {t("info.comparableCases")}
             </h3>
           </div>
           <div className="mt-3 space-y-3">
@@ -148,7 +151,7 @@ export default function InfoPanel({ project, stage }: Props) {
           <div className="flex items-center gap-2 text-gray-400">
             <AlertTriangle className="h-4 w-4" />
             <h3 className="text-xs font-semibold uppercase tracking-wider">
-              Risiken
+              {t("info.risks")}
             </h3>
           </div>
           <div className="mt-3 space-y-2">
@@ -169,12 +172,12 @@ export default function InfoPanel({ project, stage }: Props) {
                       {riskLabels[r.category] ?? r.category}
                     </span>
                     <span className="ml-auto text-[10px] font-bold text-gray-400">
-                      Score: {(score * 100).toFixed(0)}%
+                      {t("info.score")} {(score * 100).toFixed(0)}%
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-gray-500">{r.mitigation}</p>
                   <p className="mt-0.5 text-[10px] text-gray-400">
-                    Verantw.: {r.owner}
+                    {t("info.owner")} {r.owner}
                   </p>
                 </div>
               );
@@ -189,7 +192,7 @@ export default function InfoPanel({ project, stage }: Props) {
           <div className="flex items-center gap-2 text-gray-400">
             <Layers className="h-4 w-4" />
             <h3 className="text-xs font-semibold uppercase tracking-wider">
-              Geo-Layer
+              {t("info.geoLayers")}
             </h3>
           </div>
           <div className="mt-3 space-y-1.5">
@@ -216,7 +219,7 @@ export default function InfoPanel({ project, stage }: Props) {
           <div className="flex items-center gap-2 text-gray-400">
             <FileText className="h-4 w-4" />
             <h3 className="text-xs font-semibold uppercase tracking-wider">
-              Dokumente
+              {t("info.documents")}
             </h3>
           </div>
           <div className="mt-3 space-y-1.5">

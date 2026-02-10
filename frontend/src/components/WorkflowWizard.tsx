@@ -19,21 +19,13 @@ import type {
   TaskStatus,
 } from "../types";
 import { useWorkflowStore } from "../store/workflowStore";
+import { useT } from "../i18n/translations";
 import TaskWorker from "./TaskWorker";
 
 interface Props {
   project: Project;
   template: ProcessTemplate;
 }
-
-const statusConfig: Record<
-  TaskStatus,
-  { icon: typeof Circle; color: string; label: string }
-> = {
-  done: { icon: CheckCircle2, color: "text-emerald-500", label: "Erledigt" },
-  in_progress: { icon: Clock, color: "text-amber-500", label: "In Bearbeitung" },
-  pending: { icon: Circle, color: "text-gray-300", label: "Offen" },
-};
 
 function daysUntil(dateStr: string): number {
   const target = new Date(dateStr);
@@ -45,6 +37,16 @@ export default function WorkflowWizard({ project, template }: Props) {
   const { selectedStageIndex, selectedTaskId, openTask, closeTask } =
     useWorkflowStore();
   const [prevContextOpen, setPrevContextOpen] = useState(true);
+  const t = useT();
+
+  const statusConfig: Record<
+    TaskStatus,
+    { icon: typeof Circle; color: string; label: string }
+  > = {
+    done: { icon: CheckCircle2, color: "text-emerald-500", label: t("wizard.statusDone") },
+    in_progress: { icon: Clock, color: "text-amber-500", label: t("wizard.statusInProgress") },
+    pending: { icon: Circle, color: "text-gray-300", label: t("wizard.statusOpen") },
+  };
 
   const stage: StageInstance | undefined = project.stages[selectedStageIndex];
   const stageTpl: StageTemplate | undefined = template.stages[selectedStageIndex];
@@ -52,7 +54,7 @@ export default function WorkflowWizard({ project, template }: Props) {
   if (!stage || !stageTpl) {
     return (
       <div className="flex h-full items-center justify-center text-gray-400">
-        Phase nicht gefunden.
+        {t("wizard.stageNotFound")}
       </div>
     );
   }
@@ -112,11 +114,11 @@ export default function WorkflowWizard({ project, template }: Props) {
         {/* Overall progress */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Gesamtfortschritt
+            {t("wizard.overallProgress")}
           </p>
           <div className="mt-2 flex items-end gap-2">
             <span className="text-2xl font-bold text-gray-900 sm:text-3xl">{overallPct}%</span>
-            <span className="mb-1 text-xs text-gray-500">{doneTasks}/{totalTasks} Aufgaben</span>
+            <span className="mb-1 text-xs text-gray-500">{doneTasks}/{totalTasks} {t("wizard.tasks")}</span>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
             <div
@@ -129,12 +131,12 @@ export default function WorkflowWizard({ project, template }: Props) {
         {/* Stage progress */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Aktuelle Phase
+            {t("wizard.currentPhase")}
           </p>
           <div className="mt-2 flex items-end gap-2">
             <span className="text-2xl font-bold text-gray-900 sm:text-3xl">{stagePct}%</span>
             <span className="mb-1 text-xs text-gray-500">
-              {stageCompleted}/{stageTotal} erledigt
+              {stageCompleted}/{stageTotal} {t("wizard.completed")}
             </span>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
@@ -150,7 +152,7 @@ export default function WorkflowWizard({ project, template }: Props) {
         {/* Deadlines */}
         <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Nächste Fristen
+            {t("wizard.nextDeadlines")}
           </p>
           {upcomingDeadlines.length > 0 ? (
             <div className="mt-2 space-y-1.5">
@@ -175,13 +177,13 @@ export default function WorkflowWizard({ project, template }: Props) {
                           : "bg-gray-100 text-gray-600"
                     }`}
                   >
-                    {d.daysLeft <= 0 ? "Überfällig!" : `${d.daysLeft}d`}
+                    {d.daysLeft <= 0 ? t("wizard.overdue") : `${d.daysLeft}d`}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="mt-3 text-xs text-gray-400">Keine Fristen</p>
+            <p className="mt-3 text-xs text-gray-400">{t("wizard.noDeadlines")}</p>
           )}
         </div>
       </div>
@@ -199,13 +201,13 @@ export default function WorkflowWizard({ project, template }: Props) {
           <div>
             <p className="text-sm font-bold text-emerald-800">
               {overallPct === 100
-                ? "Alle Phasen abgeschlossen!"
-                : `Phase "${stageTpl.title}" abgeschlossen!`}
+                ? t("wizard.allPhasesComplete")
+                : t("wizard.phaseComplete", { title: stageTpl.title })}
             </p>
             <p className="text-xs text-emerald-600">
               {overallPct === 100
-                ? "Herzlichen Glückwunsch – alle Aufgaben wurden erledigt."
-                : "Alle Aufgaben dieser Phase sind erledigt. Weiter zur nächsten Phase!"}
+                ? t("wizard.allPhasesCongrats")
+                : t("wizard.phaseCompleteNext")}
             </p>
           </div>
         </div>
@@ -224,16 +226,16 @@ export default function WorkflowWizard({ project, template }: Props) {
             }`}
           >
             {stage.status === "completed"
-              ? "Abgeschlossen"
+              ? t("wizard.stageCompleted")
               : stage.status === "active"
-                ? "In Bearbeitung"
-                : "Noch nicht begonnen"}
+                ? t("wizard.stageActive")
+                : t("wizard.stagePending")}
           </span>
           <span className="rounded bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-700">
             {stageTpl.law_reference}
           </span>
           <span className="rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
-            Phase {selectedStageIndex + 1}/{template.stages.length}
+            {t("wizard.phase")} {selectedStageIndex + 1}/{template.stages.length}
           </span>
         </div>
         <h1 className="mt-2 text-xl font-bold text-gray-900 sm:text-2xl">
@@ -253,10 +255,10 @@ export default function WorkflowWizard({ project, template }: Props) {
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
               <div>
                 <p className="text-sm font-semibold text-red-800">
-                  Blocker: {b.title}
+                  {t("wizard.blocker")} {b.title}
                 </p>
                 <p className="text-xs text-red-600">
-                  Schweregrad: {b.severity} &middot; Verantwortlich:{" "}
+                  {t("wizard.severity")} {b.severity} &middot; {t("wizard.responsible")}{" "}
                   {b.owner_role}
                 </p>
               </div>
@@ -273,7 +275,7 @@ export default function WorkflowWizard({ project, template }: Props) {
             className="flex w-full items-center justify-between p-4 text-left"
           >
             <span className="text-sm font-semibold text-gray-700">
-              Ergebnisse vorheriger Phasen
+              {t("wizard.previousResults")}
             </span>
             {prevContextOpen ? (
               <ChevronUp className="h-4 w-4 text-gray-400" />
@@ -346,12 +348,12 @@ export default function WorkflowWizard({ project, template }: Props) {
         <div className="mb-5 rounded-lg border border-blue-100 bg-blue-50/50 p-3">
           <p className="flex items-center gap-2 text-xs font-medium text-blue-700">
             <Circle className="h-3 w-3 fill-blue-400 text-blue-400" />
-            Nächster Schritt:{" "}
+            {t("wizard.nextStepLabel")}{" "}
             {(() => {
               const nextTask = stage.tasks.find((t) => t.status !== "done");
-              if (!nextTask) return "Alle Aufgaben erledigt";
+              if (!nextTask) return t("wizard.allTasksDone");
               const tpl = stageTpl.tasks.find((t) => t.id === nextTask.template_id);
-              return tpl?.title ?? "Aufgabe bearbeiten";
+              return tpl?.title ?? t("wizard.editTask");
             })()}
           </p>
         </div>
@@ -396,7 +398,7 @@ export default function WorkflowWizard({ project, template }: Props) {
                     </span>
                     {isNext && (
                       <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">
-                        Nächster Schritt
+                        {t("wizard.nextStepBadge")}
                       </span>
                     )}
                   </div>
@@ -405,19 +407,19 @@ export default function WorkflowWizard({ project, template }: Props) {
                     {tpl.form_fields.length > 0 && (
                       <span className="inline-flex items-center gap-1 rounded bg-gray-50 px-2 py-0.5 text-xs text-gray-500">
                         <FileEdit className="h-3 w-3" />
-                        {tpl.form_fields.length} Felder
+                        {tpl.form_fields.length} {t("wizard.fields")}
                       </span>
                     )}
                     {tpl.checklist.length > 0 && (
                       <span className="inline-flex items-center gap-1 rounded bg-gray-50 px-2 py-0.5 text-xs text-gray-500">
                         <CheckCircle2 className="h-3 w-3" />
                         {task.completed_checklist.length}/{tpl.checklist.length}{" "}
-                        Punkte
+                        {t("wizard.items")}
                       </span>
                     )}
                     {tpl.form_fields.some((f) => f.type !== "date") && (
                       <span className="inline-flex items-center gap-1 rounded bg-violet-50 px-2 py-0.5 text-xs text-violet-600">
-                        KI-Unterstützung
+                        {t("wizard.aiSupport")}
                       </span>
                     )}
                     </div>
@@ -433,7 +435,7 @@ export default function WorkflowWizard({ project, template }: Props) {
                         : "bg-blue-600 text-white hover:bg-blue-700"
                   }`}
                 >
-                  {task.status === "done" ? "Ansehen" : "Bearbeiten"}
+                  {task.status === "done" ? t("wizard.view") : t("wizard.edit")}
                 </button>
               </div>
             </div>

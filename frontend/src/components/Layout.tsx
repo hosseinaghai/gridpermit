@@ -1,6 +1,7 @@
-import { Info, Mail, Menu, X, Zap } from "lucide-react";
+import { Globe, Info, Mail, Menu, X, Zap } from "lucide-react";
 import { useState } from "react";
 import type { ProcessTemplate, Project } from "../types";
+import { useT } from "../i18n/translations";
 import { useWorkflowStore } from "../store/workflowStore";
 import EmailInbox from "./EmailInbox";
 import Impressum from "./Impressum";
@@ -18,9 +19,12 @@ export default function Layout({ project, template }: Props) {
     selectedStageIndex,
     sidebarOpen,
     infoPanelOpen,
+    language,
     setSidebarOpen,
     setInfoPanelOpen,
+    setLanguage,
   } = useWorkflowStore();
+  const t = useT();
   const selectedStageTpl = template.stages[selectedStageIndex] ?? null;
   const [emailOpen, setEmailOpen] = useState(false);
   const [impressumOpen, setImpressumOpen] = useState(false);
@@ -36,7 +40,7 @@ export default function Layout({ project, template }: Props) {
         <button
           onClick={() => setSidebarOpen(true)}
           className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden"
-          aria-label="Verfahrensschritte öffnen"
+          aria-label={t("layout.openSteps")}
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -60,12 +64,21 @@ export default function Layout({ project, template }: Props) {
           <span className="hidden rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 md:inline">
             {project.states_crossed.join(", ")}
           </span>
+          {/* Language toggle */}
+          <button
+            onClick={() => setLanguage(language === "de" ? "en" : "de")}
+            className="flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50"
+            title={language === "de" ? "Switch to English" : "Auf Deutsch wechseln"}
+          >
+            <Globe className="h-3.5 w-3.5" />
+            {language === "de" ? "EN" : "DE"}
+          </button>
           {/* Info panel toggle - visible below xl */}
           {selectedStageTpl && (
             <button
               onClick={() => setInfoPanelOpen(true)}
               className="rounded-lg border border-gray-200 p-2 text-gray-600 transition hover:bg-gray-50 hover:text-gray-800 xl:hidden"
-              aria-label="Info-Panel öffnen"
+              aria-label={t("layout.openInfoPanel")}
             >
               <Info className="h-4 w-4" />
             </button>
@@ -74,7 +87,7 @@ export default function Layout({ project, template }: Props) {
           <button
             onClick={() => setEmailOpen(true)}
             className="relative rounded-lg border border-gray-200 p-2 text-gray-600 transition hover:bg-gray-50 hover:text-gray-800"
-            title="E-Mail-Eingang"
+            title={t("layout.emailInbox")}
           >
             <Mail className="h-4 w-4" />
             {unreadEmails > 0 && (
@@ -104,7 +117,7 @@ export default function Layout({ project, template }: Props) {
         >
           {/* Close button - mobile only */}
           <div className="mb-4 flex items-center justify-between lg:hidden">
-            <span className="text-sm font-bold text-gray-700">Navigation</span>
+            <span className="text-sm font-bold text-gray-700">{t("layout.navigation")}</span>
             <button
               onClick={() => setSidebarOpen(false)}
               className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
@@ -137,7 +150,7 @@ export default function Layout({ project, template }: Props) {
             >
               {/* Close button - below xl only */}
               <div className="mb-4 flex items-center justify-between xl:hidden">
-                <span className="text-sm font-bold text-gray-700">Informationen</span>
+                <span className="text-sm font-bold text-gray-700">{t("layout.information")}</span>
                 <button
                   onClick={() => setInfoPanelOpen(false)}
                   className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
@@ -154,13 +167,13 @@ export default function Layout({ project, template }: Props) {
       {/* Footer */}
       <footer className="flex items-center justify-between border-t border-gray-200 bg-white px-3 py-2 md:px-6">
         <span className="text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} Hossein Aghai. Alle Rechte vorbehalten.
+          &copy; {new Date().getFullYear()} Hossein Aghai. {t("layout.allRightsReserved")}
         </span>
         <button
           onClick={() => setImpressumOpen(true)}
           className="text-xs text-gray-400 underline hover:text-gray-600"
         >
-          Impressum
+          {t("layout.impressum")}
         </button>
       </footer>
 

@@ -21,6 +21,7 @@ from .workflow_engine import (
     find_task_in_project,
     get_task_template_id,
     get_template,
+    translate_project_display,
 )
 
 router = APIRouter()
@@ -45,12 +46,14 @@ def create_project(req: ProjectCreateRequest):
 
 
 @router.get("/project/{project_id}/workflow", response_model=WorkflowResponse)
-def get_workflow(project_id: str):
+def get_workflow(project_id: str, lang: str = "de"):
     project = mock_db.projects.get(project_id)
     if not project:
-        raise HTTPException(404, "Projekt nicht gefunden")
-    template = get_template(project.pfad)
-    return WorkflowResponse(project=project, template=template)
+        msg = "Project not found" if lang == "en" else "Projekt nicht gefunden"
+        raise HTTPException(404, msg)
+    template = get_template(project.pfad, lang=lang)
+    display_project = translate_project_display(project, lang) if lang != "de" else project
+    return WorkflowResponse(project=display_project, template=template)
 
 
 @router.get("/projects", response_model=list[Project])
@@ -63,13 +66,15 @@ def list_projects():
 # ---------------------------------------------------------------------------
 
 @router.post("/task/{task_id}/complete")
-def complete_task(task_id: str, req: TaskCompleteRequest, project_id: str):
+def complete_task(task_id: str, req: TaskCompleteRequest, project_id: str, lang: str = "de"):
     project = mock_db.projects.get(project_id)
     if not project:
-        raise HTTPException(404, "Projekt nicht gefunden")
+        msg = "Project not found" if lang == "en" else "Projekt nicht gefunden"
+        raise HTTPException(404, msg)
     location = find_task_in_project(project, task_id)
     if location is None:
-        raise HTTPException(404, "Task nicht gefunden")
+        msg = "Task not found" if lang == "en" else "Task nicht gefunden"
+        raise HTTPException(404, msg)
     si, ti = location
     task = project.stages[si].tasks[ti]
     task.status = TaskStatus.DONE
@@ -82,13 +87,15 @@ def complete_task(task_id: str, req: TaskCompleteRequest, project_id: str):
 
 
 @router.post("/task/{task_id}/save")
-def save_task(task_id: str, req: TaskCompleteRequest, project_id: str):
+def save_task(task_id: str, req: TaskCompleteRequest, project_id: str, lang: str = "de"):
     project = mock_db.projects.get(project_id)
     if not project:
-        raise HTTPException(404, "Projekt nicht gefunden")
+        msg = "Project not found" if lang == "en" else "Projekt nicht gefunden"
+        raise HTTPException(404, msg)
     location = find_task_in_project(project, task_id)
     if location is None:
-        raise HTTPException(404, "Task nicht gefunden")
+        msg = "Task not found" if lang == "en" else "Task nicht gefunden"
+        raise HTTPException(404, msg)
     si, ti = location
     task = project.stages[si].tasks[ti]
     task.form_data = req.form_data
@@ -102,13 +109,15 @@ def save_task(task_id: str, req: TaskCompleteRequest, project_id: str):
 
 
 @router.patch("/task/{task_id}/reopen")
-def reopen_task(task_id: str, project_id: str):
+def reopen_task(task_id: str, project_id: str, lang: str = "de"):
     project = mock_db.projects.get(project_id)
     if not project:
-        raise HTTPException(404, "Projekt nicht gefunden")
+        msg = "Project not found" if lang == "en" else "Projekt nicht gefunden"
+        raise HTTPException(404, msg)
     location = find_task_in_project(project, task_id)
     if location is None:
-        raise HTTPException(404, "Task nicht gefunden")
+        msg = "Task not found" if lang == "en" else "Task nicht gefunden"
+        raise HTTPException(404, msg)
     si, ti = location
     task = project.stages[si].tasks[ti]
     task.status = TaskStatus.IN_PROGRESS
@@ -126,20 +135,22 @@ def reopen_task(task_id: str, project_id: str):
 def generate_field(req: AIFieldRequest):
     project = mock_db.projects.get(req.project_id)
     if not project:
-        raise HTTPException(404, "Projekt nicht gefunden")
+        msg = "Project not found" if req.lang == "en" else "Projekt nicht gefunden"
+        raise HTTPException(404, msg)
 
     template_id = get_task_template_id(project, req.task_instance_id)
     if not template_id:
-        raise HTTPException(404, "Task nicht gefunden")
+        msg = "Task not found" if req.lang == "en" else "Task nicht gefunden"
+        raise HTTPException(404, msg)
 
-    text = _generate_for_field(project, template_id, req.field_name, req.field_label)
+    text = _generate_for_field(project, template_id, req.field_name, req.field_label, lang=req.lang)
     return AIFieldResponse(text=text)
 
 
 def _generate_for_field(
-    project: Project, task_tpl_id: str, field_name: str, field_label: str
+    project: Project, task_tpl_id: str, field_name: str, field_label: str, lang: str = "de"
 ) -> str:
-    """Generate realistic German regulatory text for any form field."""
+    """Generate realistic regulatory text for any form field."""
     p = project
 
     # Gather previous form data for context
@@ -148,8 +159,8 @@ def _generate_for_field(
         for task in stage.tasks:
             prev_data.update(task.form_data)
 
-    # Specific generators keyed by (task_template_id, field_name)
-    specific: dict[tuple[str, str], str] = {
+    # ── German specific generators keyed by (task_template_id, field_name) ──
+    specific_de: dict[tuple[str, str], str] = {
         # Stage 1 - Rechtsrahmen
         ("s1_t1", "rechtsrahmen"): (
             f"Das Vorhaben \"{p.name}\" ist als länderübergreifende Höchstspannungsleitung "
@@ -328,22 +339,205 @@ def _generate_for_field(
         ),
     }
 
+    # ── English specific generators keyed by (task_template_id, field_name) ──
+    specific_en: dict[tuple[str, str], str] = {
+        # Stage 1 - Rechtsrahmen
+        ("s1_t1", "rechtsrahmen"): (
+            f'The project "{p.name}" is listed as a cross-state extra-high voltage line '
+            f"({p.kv_level} kV {p.technology}) in the Federal Requirements Plan (BBPlG). "
+            f"Pursuant to \u00a7 2(1) NABEG, NABEG applies as the project crosses the federal states "
+            f"{' and '.join(p.states_crossed)} and has a voltage level \u2265 220 kV. "
+            f"Federal sectoral planning pursuant to \u00a7\u00a7 4\u201317 NABEG is required."
+        ),
+        ("s1_t1", "zustaendige_behoerde"): "Federal Network Agency (BNetzA), Grid Expansion Division",
+        ("s1_t1", "begruendung"): (
+            f"The assignment to NABEG results from the designation in the BBPlG as cross-state "
+            f"(\u00a7 2(1) BBPlG). The BNetzA is the responsible authority pursuant to \u00a7 31 NABEG. "
+            f"The project crosses the federal states "
+            f"{' and '.join(p.states_crossed)} over a length of {p.length_km} km."
+        ),
+        # Stage 1 - Projektsteckbrief
+        ("s1_t2", "vorhaben_titel"): p.name,
+        ("s1_t2", "technologie"): f"HVDC ({p.technology}), {p.kv_level} kV, mixed construction (overhead line/underground cable)",
+        ("s1_t2", "trassenlaenge"): f"{p.length_km} km",
+        ("s1_t2", "bundeslaender"): ", ".join(p.states_crossed),
+        ("s1_t2", "zusammenfassung"): (
+            f"Construction of a {p.kv_level} kV HVDC connection ({p.technology}) as part of "
+            f"the North-South Link for transmitting wind energy from northern Germany to "
+            f"consumption centers in southern Germany. The route runs in mixed construction "
+            f"over {p.length_km} km through {' and '.join(p.states_crossed)}. The project "
+            f"serves the implementation of the energy transition and is designated as a "
+            f"priority need in the Federal Requirements Plan."
+        ),
+        # Stage 1 - Stakeholder
+        ("s1_t3", "behoerden"): (
+            "• Federal Network Agency (BNetzA) \u2013 Permitting authority\n"
+            "• Government of Upper Franconia \u2013 Spatial planning BY\n"
+            "• District Government Kassel \u2013 Spatial planning HE\n"
+            "• Bavarian State Office for the Environment (LfU)\n"
+            "• HLNUG Hesse"
+        ),
+        ("s1_t3", "eigentuemer"): (
+            "• Owner Group A \u2013 Parcel BY-091-223-17 (private, not contacted)\n"
+            "• Municipality Demohausen \u2013 Parcel HE-044-887-03 (municipal, negotiation initiated)"
+        ),
+        ("s1_t3", "verbaende"): (
+            "• BUND State Association Bavaria\n• NABU Hesse\n"
+            "• LBV Bavaria\n• Citizens' Initiative Route Alternative e.V."
+        ),
+        # Stage 2 - Korridore
+        ("s2_t1", "korridor_a"): (
+            "Western Corridor: Routing along BAB A7, length 76.3 km, predominantly overhead "
+            "line. Crossing of 2 FFH areas, forest share 18%. Minimum settlement distance 450 m."
+        ),
+        ("s2_t1", "korridor_b"): (
+            "Eastern Corridor: Routing parallel to DB railway line, 72.8 km, underground cable "
+            "share 35%. Crossing of 1 FFH area, forest share 12%. Good bundling potential with "
+            "railway infrastructure."
+        ),
+        ("s2_t1", "vorzugskorridor"): "Corridor B (eastern)",
+        ("s2_t1", "begruendung_auswahl"): (
+            "Corridor B is recommended: (1) lower FFH impact, (2) shorter route, "
+            "(3) better infrastructure bundling, (4) lower overall spatial resistance "
+            "(Class II vs. III)."
+        ),
+        # Stage 2 - GIS
+        ("s2_t2", "schutzgebiete"): (
+            "• FFH area 'Forest area east of Demo': 2.3 km crossing\n"
+            "• Water protection zone III: 1.1 km edge contact"
+        ),
+        ("s2_t2", "waldanteil"): (
+            "Forest crossing approx. 8.7 km (12% of total route). Predominantly commercial "
+            "forest (spruce), 2.1 km mixed deciduous forest with biotope function."
+        ),
+        ("s2_t2", "siedlungsabstand"): (
+            "• Musterstadt: 320 m (overhead line)\n"
+            "• Demohausen: 220 m (underground cable planned)\n"
+            "• Beispielhof: 580 m (overhead line)"
+        ),
+        ("s2_t2", "konflikte"): (
+            "2 geometry conflicts >5m:\n"
+            "• BY-091-223-17: Overlap with mast location M-34\n"
+            "• HE-044-887-03: Underground cable route tangent to municipal road"
+        ),
+        # Stage 2 - Bericht
+        ("s2_t3", "methodik"): (
+            "Spatial resistance analysis per BNetzA guideline (2023), 3-stage assessment: "
+            "(1) Spatial resistance mapping 1:25,000, (2) Multi-criteria assessment with "
+            "14 criteria, (3) Overall evaluation incl. technical feasibility."
+        ),
+        ("s2_t3", "bewertungsergebnis"): (
+            "Corridor B: Spatial resistance class II (medium) \u2013 67/100 pts.\n"
+            "Corridor A: Spatial resistance class III (high) \u2013 48/100 pts."
+        ),
+        ("s2_t3", "empfehlung"): (
+            "Recommendation: Continue with Corridor B (eastern) as preferred corridor "
+            "in federal sectoral planning."
+        ),
+        # Stage 3 - Artenschutz
+        ("s3_t1", "betroffene_arten"): (
+            "• Red kite (Milvus milvus) \u2013 3 breeding pairs within 1 km radius\n"
+            "• Black stork (Ciconia nigra) \u2013 1 nest, 800 m distance\n"
+            "• Bats (Myotis spp.) \u2013 Roost suspicion at km 34.5"
+        ),
+        ("s3_t1", "kartierungsstatus"): (
+            "Breeding season survey for red kite and black stork ongoing. "
+            "Bat detector surveys 60% completed. Deadline: 20.02.2026."
+        ),
+        ("s3_t1", "vermeidungsmassnahmen"): (
+            "• Construction timing restriction: No construction March\u2013July within 500 m "
+            "of red kite nests\n"
+            "• Bird protection markers on earth wires in section km 12\u201318\n"
+            "• Ecological construction supervision throughout\n"
+            "• Night construction ban near bat roosts"
+        ),
+        ("s3_t1", "kompensation"): (
+            "• Red kite replacement habitat: Creation of 3 ha extensive grassland as "
+            "foraging habitat (ratio 1:1.5)\n"
+            "• Bat boxes: Installation of 20 boxes in adjacent forest\n"
+            "• CEF measure black stork: Buffer zone 500 m around nest"
+        ),
+        # Stage 3 - Scoping
+        ("s3_t2", "schutzgueter"): (
+            "• Humans (residential, recreation): Settlement distances, noise emissions\n"
+            "• Wildlife/flora/biodiversity: FFH compatibility, species protection\n"
+            "• Soil/land use: Sealing, soil compaction for underground cable\n"
+            "• Water: WPA Zone III impact, groundwater protection\n"
+            "• Climate/air: Cold air corridors, forest clearing\n"
+            "• Landscape: Visibility of overhead line masts, landscape character\n"
+            "• Cultural heritage: Ground monuments in route area"
+        ),
+        ("s3_t2", "untersuchungsraum"): (
+            f"Study area: 1,000 m on both sides of the route axis (Corridor B). "
+            f"Total area approx. 145 km\u00b2. Delimitation based on the range of relevant "
+            f"impact factors (EMF, noise, visual impact). Extended study area (3 km) for "
+            f"avifaunal surveys."
+        ),
+        ("s3_t2", "methodik_umwelt"): (
+            "EIA methodology pursuant to \u00a7 16 UVPG:\n"
+            "1. Baseline survey: Analysis of existing data + field mapping\n"
+            "2. Impact assessment: Overlay of sensitivity \u00d7 impact intensity\n"
+            "3. Evaluation: 5-level significance scale (not significant to very high)\n"
+            "4. Mitigation concept: Avoidance, minimization, compensation\n"
+            "5. Alternatives comparison: Comparison of environmental impacts"
+        ),
+        # Stage 3 - Forstanfrage
+        ("s3_t3", "empfaenger"): (
+            "Office for Food, Agriculture and Forestry (AELF)\n"
+            "Forestry Department\nBeispielstra\u00dfe 12\n95000 Musterstadt"
+        ),
+        ("s3_t3", "betreff"): (
+            f'Request for forest conversion pursuant to Art. 9 BayWaldG \u2013 '
+            f'Project "{p.name}"'
+        ),
+        ("s3_t3", "anschreiben"): (
+            f"Dear Sir or Madam,\n\n"
+            f'In the context of the project "{p.name}" ({p.kv_level} kV {p.technology}, '
+            f"federal sectoral planning under NABEG), the use of forest areas in the area "
+            f"of Corridor B (eastern) is required.\n\n"
+            f"Affected: approx. 8.7 km forest crossing (12% of total route of "
+            f"{p.length_km} km), thereof:\n"
+            f"\u2022 approx. 6.6 km commercial forest (spruce)\n"
+            f"\u2022 approx. 2.1 km mixed deciduous forest with biotope function\n\n"
+            f"We request early coordination regarding:\n"
+            f"1. Scope of required forest conversion permit\n"
+            f"2. Requirements for forest compensation\n"
+            f"3. Possible conditions and stipulations\n\n"
+            f"Detailed documents are enclosed.\n\n"
+            f"Yours sincerely"
+        ),
+        ("s3_t3", "anlagen"): (
+            "1. Overview map of route in forest area (1:10,000)\n"
+            "2. Forest type inventory map (1:5,000)\n"
+            "3. List of affected parcels\n"
+            "4. Preliminary forest compensation concept\n"
+            "5. Extract from corridor alternatives report (DOC-017, v0.9)"
+        ),
+    }
+
+    # Select the correct language dictionary
+    specific = specific_en if lang == "en" else specific_de
+
     key = (task_tpl_id, field_name)
     if key in specific:
         return specific[key]
 
     # ── Generic fallback based on field_name patterns ──
-    return _generic_fallback(p, field_name, field_label, prev_data)
+    return _generic_fallback(p, field_name, field_label, prev_data, lang=lang)
 
 
 def _generic_fallback(
-    p: Project, field_name: str, field_label: str, prev_data: dict
+    p: Project, field_name: str, field_label: str, prev_data: dict, lang: str = "de"
 ) -> str:
     """Generate generic text for fields not in the specific map."""
 
     name_lower = field_name.lower()
     label_lower = field_label.lower()
 
+    if lang == "en":
+        return _generic_fallback_en(p, field_name, field_label, name_lower, label_lower)
+
+    # ── German fallback (default) ──
     if "empfaenger" in name_lower or "empfänger" in label_lower:
         return (
             "Bundesnetzagentur\nReferat für Netzausbau\n"
@@ -403,4 +597,70 @@ def _generic_fallback(
         f"Bundesländer: {', '.join(p.states_crossed)}). "
         f"Dieser Textbaustein wurde automatisch generiert und sollte "
         f"fachlich geprüft und ergänzt werden."
+    )
+
+
+def _generic_fallback_en(
+    p: Project, field_name: str, field_label: str, name_lower: str, label_lower: str
+) -> str:
+    """Generate generic English text for fields not in the specific map."""
+
+    if "empfaenger" in name_lower or "empfänger" in label_lower:
+        return (
+            "Federal Network Agency\nGrid Expansion Division\n"
+            "Tulpenfeld 4\n53113 Bonn"
+        )
+
+    if "betreff" in name_lower:
+        return f'Re: Project "{p.name}" \u2013 {p.kv_level} kV {p.technology} \u2013 {field_label}'
+
+    if "anschreiben" in name_lower or "schreiben" in name_lower:
+        return (
+            f"Dear Sir or Madam,\n\n"
+            f'In the context of the project "{p.name}" ({p.kv_level} kV {p.technology}), '
+            f"we submit the following documents for review.\n\n"
+            f"The project extends over {p.length_km} km through the federal states "
+            f"{' and '.join(p.states_crossed)}.\n\n"
+            f"We are available for any questions.\n\n"
+            f"Yours sincerely"
+        )
+
+    if "begruendung" in name_lower or "begründung" in label_lower:
+        return (
+            f'The measure is required within the scope of the project "{p.name}" '
+            f"({p.kv_level} kV {p.technology}). The necessity arises from the designation "
+            f"in the Federal Requirements Plan as a priority need project to ensure "
+            f"security of supply."
+        )
+
+    if "methodik" in name_lower:
+        return (
+            "The assessment follows recognized methods per the current BNetzA guideline. "
+            "A multi-stage procedure is applied that considers quantitative and qualitative "
+            "criteria."
+        )
+
+    if any(k in name_lower for k in ["zusammenfassung", "beschreibung", "ergebnis"]):
+        return (
+            f'The project "{p.name}" comprises the construction of a {p.kv_level} kV '
+            f"HVDC line ({p.technology}) over {p.length_km} km through "
+            f"{' and '.join(p.states_crossed)}. The mixed construction (overhead line/"
+            f"underground cable) takes local conditions into account."
+        )
+
+    if "anlagen" in name_lower:
+        return (
+            "1. Overview map (1:25,000)\n"
+            "2. Detailed maps of affected sections\n"
+            "3. Technical explanations\n"
+            "4. Relevant reports and evidence"
+        )
+
+    # Ultimate fallback
+    return (
+        f'[{field_label}] \u2013 Draft for the project "{p.name}" '
+        f"({p.kv_level} kV {p.technology}, {p.length_km} km, "
+        f"Federal states: {', '.join(p.states_crossed)}). "
+        f"This text block was automatically generated and should be reviewed "
+        f"and supplemented by experts."
     )
