@@ -99,6 +99,34 @@ export interface ProjectTask {
   done_definition: string;
 }
 
+export interface Section {
+  id: string;
+  name: string;
+  km_start: number;
+  km_end: number;
+  region: string;
+  stages: StageInstance[];
+}
+
+export interface PermitStatus {
+  id: string;
+  section_id: string;
+  permit_type: string;
+  label: string;
+  status: string;
+}
+
+export interface EmailAction {
+  action_type: string;
+  label: string;
+  description: string;
+  confidence: number;
+  document_id?: string;
+  task_template_id?: string;
+  stage_index?: number;
+  section_id?: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -117,6 +145,8 @@ export interface Project {
   documents: ProjectDocument[];
   risks: Risk[];
   project_tasks: ProjectTask[];
+  sections: Section[];
+  permits: PermitStatus[];
   created_at: string;
 }
 

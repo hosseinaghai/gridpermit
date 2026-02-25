@@ -75,8 +75,12 @@ def complete_task(task_id: str, req: TaskCompleteRequest, project_id: str, lang:
     if location is None:
         msg = "Task not found" if lang == "en" else "Task nicht gefunden"
         raise HTTPException(404, msg)
-    si, ti = location
-    task = project.stages[si].tasks[ti]
+    section_id, si, ti = location
+    if section_id:
+        section = next(s for s in project.sections if s.id == section_id)
+        task = section.stages[si].tasks[ti]
+    else:
+        task = project.stages[si].tasks[ti]
     task.status = TaskStatus.DONE
     task.form_data = req.form_data
     task.completed_checklist = req.completed_checklist
@@ -96,8 +100,12 @@ def save_task(task_id: str, req: TaskCompleteRequest, project_id: str, lang: str
     if location is None:
         msg = "Task not found" if lang == "en" else "Task nicht gefunden"
         raise HTTPException(404, msg)
-    si, ti = location
-    task = project.stages[si].tasks[ti]
+    section_id, si, ti = location
+    if section_id:
+        section = next(s for s in project.sections if s.id == section_id)
+        task = section.stages[si].tasks[ti]
+    else:
+        task = project.stages[si].tasks[ti]
     task.form_data = req.form_data
     task.completed_checklist = req.completed_checklist
     task.updated_at = datetime.now()
@@ -118,13 +126,22 @@ def reopen_task(task_id: str, project_id: str, lang: str = "de"):
     if location is None:
         msg = "Task not found" if lang == "en" else "Task nicht gefunden"
         raise HTTPException(404, msg)
-    si, ti = location
-    task = project.stages[si].tasks[ti]
+    section_id, si, ti = location
+    if section_id:
+        section = next(s for s in project.sections if s.id == section_id)
+        task = section.stages[si].tasks[ti]
+    else:
+        task = project.stages[si].tasks[ti]
     task.status = TaskStatus.IN_PROGRESS
     task.updated_at = datetime.now()
     template = get_template(project.pfad)
     evaluate_stage(project, template)
     return {"status": "ok"}
+
+
+@router.post("/email/{email_id}/action")
+def email_action(email_id: str, action_type: str = "assign_task"):
+    return {"status": "ok", "email_id": email_id, "action": action_type}
 
 
 # ---------------------------------------------------------------------------
@@ -155,6 +172,10 @@ def _generate_for_field(
 
     # Gather previous form data for context
     prev_data: dict[str, str] = {}
+    for section in p.sections:
+        for stage in section.stages:
+            for task in stage.tasks:
+                prev_data.update(task.form_data)
     for stage in p.stages:
         for task in stage.tasks:
             prev_data.update(task.form_data)

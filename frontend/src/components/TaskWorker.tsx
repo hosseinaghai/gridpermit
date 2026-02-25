@@ -33,6 +33,7 @@ interface Props {
   stageIndex: number;
   taskInstance: TaskInstance;
   taskTemplate: TaskTemplate;
+  sectionId?: string;
   onClose: () => void;
 }
 
@@ -45,6 +46,7 @@ export default function TaskWorker({
   stageIndex,
   taskInstance,
   taskTemplate,
+  sectionId,
   onClose,
 }: Props) {
   const queryClient = useQueryClient();
@@ -95,14 +97,14 @@ export default function TaskWorker({
 
   const saveMutation = useMutation({
     mutationFn: () =>
-      saveTask(taskInstance.id, project.id, formData, checklist, language),
+      saveTask(taskInstance.id, project.id, formData, checklist, language, sectionId),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["workflow", project.id] }),
   });
 
   const completeMutation = useMutation({
     mutationFn: () =>
-      completeTask(taskInstance.id, project.id, formData, checklist, language),
+      completeTask(taskInstance.id, project.id, formData, checklist, language, sectionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["workflow", project.id] });
       setIsDone(true);
@@ -130,7 +132,11 @@ export default function TaskWorker({
   const canComplete = checklistComplete && formFieldsFilled;
 
   // Collect previous stage context
-  const prevStages = project.stages.slice(0, stageIndex);
+  const currentSection = sectionId
+    ? project.sections.find((s) => s.id === sectionId)
+    : undefined;
+  const sectionStages = currentSection?.stages ?? project.stages;
+  const prevStages = sectionStages.slice(0, stageIndex);
   const prevEntries: { stageTitle: string; taskTitle: string; label: string; value: string }[] = [];
   prevStages.forEach((ps, psIdx) => {
     const psTpl = template.stages[psIdx];

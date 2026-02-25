@@ -28,18 +28,18 @@ export function completeTask(
   projectId: string,
   formData: Record<string, string>,
   completedChecklist: number[],
-  lang: Language = "de"
+  lang: Language = "de",
+  sectionId?: string
 ) {
-  return request<{ status: string; project: Project }>(
-    `/task/${taskId}/complete?project_id=${projectId}&lang=${lang}`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        form_data: formData,
-        completed_checklist: completedChecklist,
-      }),
-    }
-  );
+  let url = `/task/${taskId}/complete?project_id=${projectId}&lang=${lang}`;
+  if (sectionId) url += `&section_id=${sectionId}`;
+  return request<{ status: string; project: Project }>(url, {
+    method: "POST",
+    body: JSON.stringify({
+      form_data: formData,
+      completed_checklist: completedChecklist,
+    }),
+  });
 }
 
 export function saveTask(
@@ -47,18 +47,24 @@ export function saveTask(
   projectId: string,
   formData: Record<string, string>,
   completedChecklist: number[],
-  lang: Language = "de"
+  lang: Language = "de",
+  sectionId?: string
 ) {
-  return request<{ status: string }>(
-    `/task/${taskId}/save?project_id=${projectId}&lang=${lang}`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        form_data: formData,
-        completed_checklist: completedChecklist,
-      }),
-    }
-  );
+  let url = `/task/${taskId}/save?project_id=${projectId}&lang=${lang}`;
+  if (sectionId) url += `&section_id=${sectionId}`;
+  return request<{ status: string }>(url, {
+    method: "POST",
+    body: JSON.stringify({
+      form_data: formData,
+      completed_checklist: completedChecklist,
+    }),
+  });
+}
+
+export function executeEmailAction(emailId: string, actionType: string) {
+  return request<{ status: string }>(`/email/${emailId}/action?action_type=${actionType}`, {
+    method: "POST",
+  });
 }
 
 export function reopenTask(taskId: string, projectId: string, lang: Language = "de") {

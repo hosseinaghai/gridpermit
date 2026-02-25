@@ -147,6 +147,58 @@ const de: Record<string, string> = {
   "email.fileAndAssign": "Zuordnen & Ablegen",
   "email.filedIn": "Abgelegt in:",
 
+  // ── SectionTabs.tsx ────────────────────────────────────────────────
+  "sections.title": "Abschnitte",
+  "sections.km": "km {start}\u2013{end}",
+  "sections.progress": "{pct}% abgeschlossen",
+
+  // ── PermitDashboard.tsx ────────────────────────────────────────────
+  "permits.title": "Genehmigungen",
+  "permits.open": "offen",
+  "permits.inProgress": "in Bearbeitung",
+  "permits.approved": "genehmigt",
+  "permits.rejected": "abgelehnt",
+  "permits.type.naturschutz": "Naturschutz",
+  "permits.type.waldumwandlung": "Waldumwandlung",
+  "permits.type.wasserrecht": "Wasserrecht",
+  "permits.type.denkmalschutz": "Denkmalschutz",
+  "permits.type.kreuzung": "Kreuzungsvereinb.",
+  "permits.type.immission": "Immissionsschutz",
+  "permits.noOpen": "Keine offenen Genehmigungen",
+  "permits.total": "Gesamt",
+
+  // ── EmailPanel.tsx ─────────────────────────────────────────────────
+  "email.panel.title": "E-Mail-Eingang",
+  "email.panel.unread": "{count} ungelesen",
+  "email.actions.respond": "Antworten",
+  "email.actions.sendDocument": "Dokument senden",
+  "email.actions.forward": "Weiterleiten",
+  "email.actions.createBlocker": "Blocker erstellen",
+  "email.actions.assignTask": "Aufgabe zuordnen",
+  "email.actions.suggested": "KI-Vorschl\u00e4ge",
+  "email.actions.confidence": "Konfidenz",
+  "email.actions.execute": "Ausf\u00fchren",
+  "email.actions.executed": "Ausgef\u00fchrt",
+  "email.fullView": "Vollansicht",
+
+  "layout.dashboard": "Dashboard",
+  "email.synthesis.title": "KI-Synthese",
+  "email.aiFile": "KI ablegen",
+  "email.aiFiled": "Abgelegt",
+  "email.aiFill": "KI ausf\u00fcllen",
+  "email.attachments": "Anh\u00e4nge",
+
+  // ── EmailInbox action dialogs ──────────────────────────────────────
+  "email.action.to": "An",
+  "email.action.subject": "Betreff",
+  "email.action.message": "Nachricht",
+  "email.action.assignTo": "Zuordnen zu",
+  "email.action.forwardTo": "Weiterleiten an",
+  "email.action.note": "Anmerkung",
+  "email.action.blockerTitle": "Blocker-Titel",
+  "email.action.blockerSource": "Quelle",
+  "email.action.cancel": "Abbrechen",
+
   // ── Impressum.tsx ────────────────────────────────────────────────────
   "impressum.germanLawNote":
     "This legal notice (Impressum) is required by German law and is provided in German only.",
@@ -296,6 +348,58 @@ const en: Record<string, string> = {
   "email.assignAndFile": "Assign & File",
   "email.fileAndAssign": "Assign & File",
   "email.filedIn": "Filed in:",
+
+  // ── SectionTabs.tsx ────────────────────────────────────────────────
+  "sections.title": "Sections",
+  "sections.km": "km {start}\u2013{end}",
+  "sections.progress": "{pct}% complete",
+
+  // ── PermitDashboard.tsx ────────────────────────────────────────────
+  "permits.title": "Permits",
+  "permits.open": "open",
+  "permits.inProgress": "in progress",
+  "permits.approved": "approved",
+  "permits.rejected": "rejected",
+  "permits.type.naturschutz": "Nature Conservation",
+  "permits.type.waldumwandlung": "Forest Conversion",
+  "permits.type.wasserrecht": "Water Rights",
+  "permits.type.denkmalschutz": "Heritage Protection",
+  "permits.type.kreuzung": "Crossing Agreements",
+  "permits.type.immission": "Immission Control",
+  "permits.noOpen": "No open permits",
+  "permits.total": "Total",
+
+  // ── EmailPanel.tsx ─────────────────────────────────────────────────
+  "email.panel.title": "Email Inbox",
+  "email.panel.unread": "{count} unread",
+  "email.actions.respond": "Respond",
+  "email.actions.sendDocument": "Send Document",
+  "email.actions.forward": "Forward",
+  "email.actions.createBlocker": "Create Blocker",
+  "email.actions.assignTask": "Assign to Task",
+  "email.actions.suggested": "AI Suggestions",
+  "email.actions.confidence": "Confidence",
+  "email.actions.execute": "Execute",
+  "email.actions.executed": "Executed",
+  "email.fullView": "Full View",
+
+  "layout.dashboard": "Dashboard",
+  "email.synthesis.title": "AI Synthesis",
+  "email.aiFile": "AI File",
+  "email.aiFiled": "Filed",
+  "email.aiFill": "AI Fill",
+  "email.attachments": "Attachments",
+
+  // ── EmailInbox action dialogs ──────────────────────────────────────
+  "email.action.to": "To",
+  "email.action.subject": "Subject",
+  "email.action.message": "Message",
+  "email.action.assignTo": "Assign to",
+  "email.action.forwardTo": "Forward to",
+  "email.action.note": "Note",
+  "email.action.blockerTitle": "Blocker Title",
+  "email.action.blockerSource": "Source",
+  "email.action.cancel": "Cancel",
 
   // ── Impressum.tsx ────────────────────────────────────────────────────
   "impressum.germanLawNote":

@@ -21,8 +21,11 @@ const lineStyles: Record<StageStatus, string> = {
 };
 
 export default function ProcessStepper({ project, template }: Props) {
-  const { selectedStageIndex, selectStage } = useWorkflowStore();
+  const { selectedStageIndex, selectedSectionIndex, selectStage } = useWorkflowStore();
   const t = useT();
+
+  const currentSection = project.sections[selectedSectionIndex];
+  const stages = currentSection?.stages ?? project.stages;
 
   return (
     <div>
@@ -31,9 +34,10 @@ export default function ProcessStepper({ project, template }: Props) {
       </h2>
 
       <div className="relative">
-        {project.stages.map((stage, idx) => {
-          const tpl = template.stages[idx]!;
-          const isLast = idx === project.stages.length - 1;
+        {stages.map((stage, idx) => {
+          const tpl = template.stages[idx];
+          if (!tpl) return null;
+          const isLast = idx === stages.length - 1;
           const isSelected = idx === selectedStageIndex;
           const completedTasks = stage.tasks.filter(
             (t) => t.status === "done"

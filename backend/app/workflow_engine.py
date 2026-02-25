@@ -116,6 +116,37 @@ NABEG_TEMPLATE_DE = ProcessTemplate(
                         FormField(name="empfehlung", label="Empfehlung", type="textarea"),
                     ],
                 ),
+                TaskTemplate(
+                    id="s2_t4",
+                    title="Kreuzungsvereinbarungen vorbereiten",
+                    description=(
+                        "Vorbereitung und Abschluss von Kreuzungsvereinbarungen mit Infrastrukturbetreibern "
+                        "gem\u00e4\u00df EBKrG (\u00a7\u00a7 2, 3, 11), \u00a7 9 FStrG (Bauverbot/Zustimmungszonen an Bundesfernstra\u00dfen), "
+                        "\u00a7 31 WaStrG (Bundeswasserstra\u00dfen) sowie SKR 2016/Ril 878 (Stromleitungskreuzungsrichtlinien DB)."
+                    ),
+                    form_fields=[
+                        FormField(name="kreuzung_bahn", label="Kreuzung Bahnstrecken (DB InfraGO, SKR 2016/Ril 878)", type="textarea"),
+                        FormField(name="kreuzung_strasse", label="Kreuzung Bundesfernstra\u00dfen (\u00a7 9 FStrG, Autobahn GmbH)", type="textarea"),
+                        FormField(name="kreuzung_wasserstrasse", label="Kreuzung Bundeswasserstra\u00dfen (\u00a7 31 WaStrG)", type="textarea"),
+                        FormField(name="kreuzung_sonstige", label="Sonstige Kreuzungen (Pipelines, Telekom, andere Leitungen)", type="textarea"),
+                        FormField(name="profilplaene", label="Freileitungs-Profilpl\u00e4ne & L\u00e4ngsschnitte", type="textarea"),
+                        FormField(name="schutzmassnahmen_kreuzung", label="Schutzma\u00dfnahmenkonzept (Sicherheitsnetze, Bauzeitr\u00e4ume)", type="textarea"),
+                        FormField(name="kostenteilung", label="Kostenteilung (\u00a7 12 FStrG / \u00a7 11 EBKrG)", type="textarea"),
+                        FormField(name="vereinbarungen_status", label="Status der Kreuzungsvereinbarungen", type="textarea"),
+                    ],
+                    checklist=[
+                        "Kreuzungsstellen identifiziert und kartiert",
+                        "DB InfraGO AG kontaktiert (Online-Portal Ril 878)",
+                        "Kreuzungsantrag DB eingereicht (Formular 878.2202A07)",
+                        "Autobahn GmbH kontaktiert (\u00a7 9 FStrG Zustimmung)",
+                        "WSA-Genehmigung f\u00fcr Bundeswasserstra\u00dfen beantragt (\u00a7 31 WaStrG)",
+                        "Profilpl\u00e4ne und Lageplaneerstellt",
+                        "Technische Pr\u00fcfung durch Kreuzungspartner abgeschlossen",
+                        "Schutzma\u00dfnahmenkonzept abgestimmt",
+                        "Kreuzungsvereinbarungen unterzeichnet",
+                        "Baufenster und Sperrpausen koordiniert",
+                    ],
+                ),
             ],
         ),
         # -- Stage 3: Untersuchungsrahmen --
@@ -170,6 +201,99 @@ NABEG_TEMPLATE_DE = ProcessTemplate(
                         FormField(name="betreff", label="Betreff", type="text"),
                         FormField(name="anschreiben", label="Anschreiben", type="textarea"),
                         FormField(name="anlagen", label="Anlagenverzeichnis", type="textarea"),
+                    ],
+                ),
+                TaskTemplate(
+                    id="s3_t4",
+                    title="Wasserrechtliche Genehmigung beantragen",
+                    description=(
+                        "Beantragung der wasserrechtlichen Erlaubnis gem\u00e4\u00df WHG: "
+                        "\u00a7 8 (Erlaubnis-/Bewilligungspflicht), \u00a7 36 (Anlagen an Gew\u00e4ssern), "
+                        "\u00a7 38 (Gew\u00e4sserrandstreifen), \u00a7 52 (Wasserschutzgebiete), "
+                        "\u00a7 78 (Hochwasser-/\u00dcberschwemmungsgebiete). "
+                        "Konzentrationswirkung gem\u00e4\u00df \u00a7 24 NABEG i.V.m. \u00a7 70 WHG."
+                    ),
+                    form_fields=[
+                        FormField(name="gewaesserquerungen", label="Gew\u00e4sserquerungen (Bezeichnung, Stationierung, Querungsmethode)", type="textarea"),
+                        FormField(name="grundwasser", label="Grundwasserbeeinflussung (Flurabstand, Bauwasserh.)", type="textarea"),
+                        FormField(name="schutzgebiete_wasser", label="Betr. Wasserschutzgebiete (\u00a7 52 WHG) & \u00dcberschwemmungsgebiete (\u00a7 78 WHG)", type="textarea"),
+                        FormField(name="hydrogeologie", label="Hydrogeologisches Gutachten (Ergebnisse)", type="textarea"),
+                        FormField(name="schutzmassnahmen_wasser", label="Gew\u00e4sserschutzma\u00dfnahmen & Bauwasserhaltungskonzept", type="textarea"),
+                        FormField(name="antrag_status_wasser", label="Antragsstatus bei Wasserbeh\u00f6rde", type="textarea"),
+                    ],
+                    checklist=[
+                        "Gew\u00e4sserquerungen identifiziert und kartiert",
+                        "Hydrogeologisches Gutachten erstellt",
+                        "Gew\u00e4sserkreuzungspl\u00e4ne erstellt (1:5.000)",
+                        "\u00dcberschwemmungsgebiet-Vertr\u00e4glichkeit gepr\u00fcft (\u00a7 78 WHG)",
+                        "Wasserschutzgebiet-Vertr\u00e4glichkeit gepr\u00fcft (\u00a7 52 WHG)",
+                        "Bauwasserhaltungskonzept erstellt",
+                        "Untere Wasserbeh\u00f6rde Stellungnahme eingeholt",
+                        "WSA-Genehmigung f\u00fcr Bundeswasserstra\u00dfen beantragt (\u00a7 31 WaStrG)",
+                        "\u00d6kologische Baubegleitung beauftragt",
+                    ],
+                ),
+                TaskTemplate(
+                    id="s3_t5",
+                    title="Denkmalschutzpr\u00fcfung durchf\u00fchren",
+                    description=(
+                        "Pr\u00fcfung denkmalschutzrechtlicher Belange gem\u00e4\u00df Landes-DSchG und Europ\u00e4ischer "
+                        "Konvention zum Schutz des arch\u00e4ologischen Erbes (Valletta-Konvention 1992). "
+                        "Konzentrationswirkung \u00a7 24 NABEG. Verursacherprinzip: Vorhabentr\u00e4ger tr\u00e4gt "
+                        "Kosten f\u00fcr Prospektion und Rettungsgrabungen."
+                    ),
+                    form_fields=[
+                        FormField(name="bodendenkmale", label="Bekannte Bodendenkmale im Trassenbereich (Denkmalliste)", type="textarea"),
+                        FormField(name="baudenkmale", label="Baudenkmale & Denkmalensembles im Umkreis", type="textarea"),
+                        FormField(name="prospektion", label="Arch\u00e4ologische Prospektion (Feldbegehung, Geomagnetik, Georadar)", type="textarea"),
+                        FormField(name="rettungsgrabung", label="Rettungsgrabungen (Ergebnisse & Dokumentation)", type="textarea"),
+                        FormField(name="trassenoptimierung", label="Trassenverlagerung zur Denkmalvermeidung", type="textarea"),
+                        FormField(name="auflagen_denkmal", label="Denkmalschutzrechtliche Auflagen & Nebenbestimmungen", type="textarea"),
+                    ],
+                    checklist=[
+                        "Denkmallisten und Bodendenkmal-Kartierung abgeglichen",
+                        "Landesamt f\u00fcr Denkmalpflege kontaktiert/Stellungnahme angefordert",
+                        "Denkmalrechtlicher Fachbeitrag erstellt",
+                        "Feldbegehungen durchgef\u00fchrt",
+                        "Geomagnetische Prospektion durchgef\u00fchrt",
+                        "Georadar-Untersuchung durchgef\u00fchrt (falls erforderlich)",
+                        "Trassenoptimierung zur Denkmalvermeidung gepr\u00fcft",
+                        "Rettungsgrabungen durchgef\u00fchrt (falls erforderlich)",
+                        "Arch\u00e4ologische Baubegleitung vertraglich geregelt",
+                        "Kosten nach Verursacherprinzip erfasst",
+                    ],
+                ),
+                TaskTemplate(
+                    id="s3_t6",
+                    title="Immissionsschutznachweis erstellen",
+                    description=(
+                        "Nachweis der Einhaltung der Grenzwerte gem\u00e4\u00df 26. BImSchV: "
+                        "\u00a7 3 (Grenzwerte Niederfrequenzanlagen: 5 kV/m E-Feld, 100 \u00b5T B-Feld bei 50 Hz; "
+                        "500 \u00b5T f\u00fcr Gleichstromanlagen), "
+                        "\u00a7 4 (Minimierungsgebot), "
+                        "\u00a7 5 (Berechnung nach DIN EN 50413), "
+                        "\u00a7 7 (Anzeigepflicht bei Immissionsschutzbeh\u00f6rde). "
+                        "Zus\u00e4tzlich Schallimmissionsprognose gem\u00e4\u00df TA L\u00e4rm f\u00fcr Koronager\u00e4usche."
+                    ),
+                    form_fields=[
+                        FormField(name="leitungstyp", label="Leitungstyp (AC/DC, Spannung, Freileitung/Erdkabel)", type="text"),
+                        FormField(name="emf_berechnung", label="EMF-Berechnung nach DIN EN 50413 (E-Feld kV/m, B-Feld \u00b5T)", type="textarea"),
+                        FormField(name="immissionsorte", label="Empfindliche Immissionsorte (Wohngeb\u00e4ude, Schulen, Abst\u00e4nde)", type="textarea"),
+                        FormField(name="grenzwertvergleich", label="Grenzwertvergleich (\u00a7 3 Abs. 2: 100 \u00b5T bei 50 Hz / 500 \u00b5T DC)", type="textarea"),
+                        FormField(name="minimierung", label="Minimierungsma\u00dfnahmen nach \u00a7 4 (Phasenlage, Masttyp, H\u00f6he)", type="textarea"),
+                        FormField(name="schallprognose", label="Schallimmissionsprognose (Koronager\u00e4usche, dB(A) an Immissionsorten)", type="textarea"),
+                        FormField(name="anzeige_behoerde", label="Anzeige nach \u00a7 7 an Immissionsschutzbeh\u00f6rde (Datum, Status)", type="textarea"),
+                    ],
+                    checklist=[
+                        "Empfindliche Immissionsorte entlang der Trasse identifiziert",
+                        "EMF-Berechnung nach DIN EN 50413 durchgef\u00fchrt",
+                        "Elektrische Feldst\u00e4rke < 5 kV/m an allen Immissionsorten nachgewiesen",
+                        "Magnetische Flussdichte < 100 \u00b5T (50 Hz) / < 500 \u00b5T (DC) nachgewiesen",
+                        "Minimierungsma\u00dfnahmen nach \u00a7 4 dokumentiert",
+                        "Freileitungstrasse f\u00fchrt nicht \u00fcber Wohngeb\u00e4ude (\u00a7 4 Abs. 3)",
+                        "Schallimmissionsprognose erstellt (TA L\u00e4rm)",
+                        "Anzeige nach \u00a7 7 an Immissionsschutzbeh\u00f6rde \u00fcbermittelt",
+                        "Stellungnahme der Immissionsschutzbeh\u00f6rde eingeholt",
                     ],
                 ),
             ],
@@ -278,6 +402,37 @@ NABEG_TEMPLATE_EN = ProcessTemplate(
                         FormField(name="empfehlung", label="Recommendation", type="textarea"),
                     ],
                 ),
+                TaskTemplate(
+                    id="s2_t4",
+                    title="Prepare Crossing Agreements",
+                    description=(
+                        "Preparation and conclusion of crossing agreements with infrastructure operators "
+                        "pursuant to EBKrG (\u00a7\u00a7 2, 3, 11), \u00a7 9 FStrG (building restrictions near federal highways), "
+                        "\u00a7 31 WaStrG (federal waterways), and SKR 2016/Ril 878 (DB power line crossing guidelines)."
+                    ),
+                    form_fields=[
+                        FormField(name="kreuzung_bahn", label="Railway Crossings (DB InfraGO, SKR 2016/Ril 878)", type="textarea"),
+                        FormField(name="kreuzung_strasse", label="Federal Highway Crossings (\u00a7 9 FStrG, Autobahn GmbH)", type="textarea"),
+                        FormField(name="kreuzung_wasserstrasse", label="Federal Waterway Crossings (\u00a7 31 WaStrG)", type="textarea"),
+                        FormField(name="kreuzung_sonstige", label="Other Crossings (Pipelines, Telecom, Other Lines)", type="textarea"),
+                        FormField(name="profilplaene", label="Overhead Line Profile Plans & Cross-Sections", type="textarea"),
+                        FormField(name="schutzmassnahmen_kreuzung", label="Protective Measures Concept (Safety Nets, Timing)", type="textarea"),
+                        FormField(name="kostenteilung", label="Cost Allocation (\u00a7 12 FStrG / \u00a7 11 EBKrG)", type="textarea"),
+                        FormField(name="vereinbarungen_status", label="Crossing Agreement Status", type="textarea"),
+                    ],
+                    checklist=[
+                        "Crossing locations identified and mapped",
+                        "DB InfraGO AG contacted (Online Portal Ril 878)",
+                        "DB crossing application submitted (Form 878.2202A07)",
+                        "Autobahn GmbH contacted (\u00a7 9 FStrG approval)",
+                        "WSA permit for federal waterways applied (\u00a7 31 WaStrG)",
+                        "Profile plans and site plans prepared",
+                        "Technical review by crossing partner completed",
+                        "Protective measures concept agreed",
+                        "Crossing agreements signed",
+                        "Construction windows and track closures coordinated",
+                    ],
+                ),
             ],
         ),
         # -- Stage 3: Scope of Investigation --
@@ -332,6 +487,98 @@ NABEG_TEMPLATE_EN = ProcessTemplate(
                         FormField(name="betreff", label="Subject", type="text"),
                         FormField(name="anschreiben", label="Cover Letter", type="textarea"),
                         FormField(name="anlagen", label="List of Attachments", type="textarea"),
+                    ],
+                ),
+                TaskTemplate(
+                    id="s3_t4",
+                    title="Apply for Water Law Permit",
+                    description=(
+                        "Application for water law permit pursuant to WHG: "
+                        "\u00a7 8 (permit/authorization requirement), \u00a7 36 (facilities at water bodies), "
+                        "\u00a7 38 (riparian buffer strips), \u00a7 52 (water protection areas), "
+                        "\u00a7 78 (flood zones). Concentration effect per \u00a7 24 NABEG in conjunction with \u00a7 70 WHG."
+                    ),
+                    form_fields=[
+                        FormField(name="gewaesserquerungen", label="Watercourse Crossings (Name, Station, Crossing Method)", type="textarea"),
+                        FormField(name="grundwasser", label="Groundwater Impact (Depth, Construction Dewatering)", type="textarea"),
+                        FormField(name="schutzgebiete_wasser", label="Water Protection Areas (\u00a7 52 WHG) & Flood Zones (\u00a7 78 WHG)", type="textarea"),
+                        FormField(name="hydrogeologie", label="Hydrogeological Survey (Results)", type="textarea"),
+                        FormField(name="schutzmassnahmen_wasser", label="Water Protection Measures & Dewatering Concept", type="textarea"),
+                        FormField(name="antrag_status_wasser", label="Application Status at Water Authority", type="textarea"),
+                    ],
+                    checklist=[
+                        "Watercourse crossings identified and mapped",
+                        "Hydrogeological survey prepared",
+                        "Watercourse crossing plans prepared (1:5,000)",
+                        "Flood zone compatibility assessed (\u00a7 78 WHG)",
+                        "Water protection area compatibility assessed (\u00a7 52 WHG)",
+                        "Construction dewatering concept prepared",
+                        "Lower water authority opinion obtained",
+                        "WSA permit for federal waterways applied (\u00a7 31 WaStrG)",
+                        "Ecological construction supervision commissioned",
+                    ],
+                ),
+                TaskTemplate(
+                    id="s3_t5",
+                    title="Conduct Heritage Protection Assessment",
+                    description=(
+                        "Assessment of heritage protection concerns pursuant to state heritage protection law (DSchG) "
+                        "and the European Convention for the Protection of Archaeological Heritage (Valletta Convention 1992). "
+                        "Concentration effect per \u00a7 24 NABEG. Polluter-pays principle: project developer bears "
+                        "costs for prospection and rescue excavations."
+                    ),
+                    form_fields=[
+                        FormField(name="bodendenkmale", label="Known Ground Monuments in Route Area (Heritage Registry)", type="textarea"),
+                        FormField(name="baudenkmale", label="Built Monuments & Heritage Ensembles in Vicinity", type="textarea"),
+                        FormField(name="prospektion", label="Archaeological Prospection (Field Walking, Magnetometry, GPR)", type="textarea"),
+                        FormField(name="rettungsgrabung", label="Rescue Excavations (Results & Documentation)", type="textarea"),
+                        FormField(name="trassenoptimierung", label="Route Adjustment for Monument Avoidance", type="textarea"),
+                        FormField(name="auflagen_denkmal", label="Heritage Protection Requirements & Conditions", type="textarea"),
+                    ],
+                    checklist=[
+                        "Heritage registries and ground monument maps cross-referenced",
+                        "State heritage office contacted/opinion requested",
+                        "Heritage protection technical report prepared",
+                        "Field walking surveys conducted",
+                        "Geomagnetic prospection conducted",
+                        "Ground-penetrating radar survey conducted (if required)",
+                        "Route optimization for monument avoidance assessed",
+                        "Rescue excavations conducted (if required)",
+                        "Archaeological construction supervision contractually arranged",
+                        "Costs under polluter-pays principle recorded",
+                    ],
+                ),
+                TaskTemplate(
+                    id="s3_t6",
+                    title="Prepare Immission Protection Certificate",
+                    description=(
+                        "Proof of compliance with limits pursuant to 26. BImSchV: "
+                        "\u00a7 3 (limits for low-frequency systems: 5 kV/m E-field, 100 \u00b5T B-field at 50 Hz; "
+                        "500 \u00b5T for DC systems), "
+                        "\u00a7 4 (minimization requirement), "
+                        "\u00a7 5 (calculation per DIN EN 50413), "
+                        "\u00a7 7 (notification to immission control authority). "
+                        "Additionally noise immission forecast per TA L\u00e4rm for corona noise."
+                    ),
+                    form_fields=[
+                        FormField(name="leitungstyp", label="Line Type (AC/DC, Voltage, Overhead/Underground)", type="text"),
+                        FormField(name="emf_berechnung", label="EMF Calculation per DIN EN 50413 (E-field kV/m, B-field \u00b5T)", type="textarea"),
+                        FormField(name="immissionsorte", label="Sensitive Receptor Locations (Residences, Schools, Distances)", type="textarea"),
+                        FormField(name="grenzwertvergleich", label="Limit Comparison (\u00a7 3(2): 100 \u00b5T at 50 Hz / 500 \u00b5T DC)", type="textarea"),
+                        FormField(name="minimierung", label="Minimization Measures per \u00a7 4 (Phase Arrangement, Tower Type, Height)", type="textarea"),
+                        FormField(name="schallprognose", label="Noise Immission Forecast (Corona Noise, dB(A) at Receptors)", type="textarea"),
+                        FormField(name="anzeige_behoerde", label="Notification per \u00a7 7 to Immission Control Authority (Date, Status)", type="textarea"),
+                    ],
+                    checklist=[
+                        "Sensitive receptor locations along route identified",
+                        "EMF calculation per DIN EN 50413 conducted",
+                        "Electric field strength < 5 kV/m at all receptor locations verified",
+                        "Magnetic flux density < 100 \u00b5T (50 Hz) / < 500 \u00b5T (DC) verified",
+                        "Minimization measures per \u00a7 4 documented",
+                        "Overhead line route does not cross residential buildings (\u00a7 4(3))",
+                        "Noise immission forecast prepared (TA L\u00e4rm)",
+                        "Notification per \u00a7 7 submitted to immission control authority",
+                        "Opinion from immission control authority obtained",
                     ],
                 ),
             ],
@@ -517,17 +764,26 @@ def create_project_stages(template: ProcessTemplate) -> list[StageInstance]:
 
 def evaluate_stage(project: Project, _template: ProcessTemplate) -> Project:
     """Update stage statuses based on task completion. No locking."""
-    for i, stage in enumerate(project.stages):
+    # Evaluate stages within each section
+    for section in project.sections:
+        for stage in section.stages:
+            all_done = all(t.status == TaskStatus.DONE for t in stage.tasks)
+            any_started = any(t.status != TaskStatus.PENDING for t in stage.tasks)
+            if all_done and len(stage.tasks) > 0:
+                stage.status = StageStatus.COMPLETED
+            elif any_started:
+                stage.status = StageStatus.ACTIVE
+
+    # Legacy: evaluate project-level stages too
+    for stage in project.stages:
         all_done = all(t.status == TaskStatus.DONE for t in stage.tasks)
         any_started = any(t.status != TaskStatus.PENDING for t in stage.tasks)
-
         if all_done and len(stage.tasks) > 0:
             stage.status = StageStatus.COMPLETED
         elif any_started:
             stage.status = StageStatus.ACTIVE
-        # PENDING stages stay PENDING but are still accessible
 
-    # Update current_stage_index to the first non-completed stage
+    # Update current_stage_index
     for i, stage in enumerate(project.stages):
         if stage.status != StageStatus.COMPLETED:
             project.current_stage_index = i
@@ -538,15 +794,27 @@ def evaluate_stage(project: Project, _template: ProcessTemplate) -> Project:
     return project
 
 
-def find_task_in_project(project: Project, task_id: str) -> tuple[int, int] | None:
+def find_task_in_project(project: Project, task_id: str) -> tuple[str, int, int] | None:
+    """Search all sections for a task. Returns (section_id, stage_index, task_index) or None."""
+    for section in project.sections:
+        for si, stage in enumerate(section.stages):
+            for ti, task in enumerate(stage.tasks):
+                if task.id == task_id:
+                    return section.id, si, ti
+    # Fallback: search project.stages directly (backward compat)
     for si, stage in enumerate(project.stages):
         for ti, task in enumerate(stage.tasks):
             if task.id == task_id:
-                return si, ti
+                return "", si, ti
     return None
 
 
 def get_task_template_id(project: Project, task_instance_id: str) -> str | None:
+    for section in project.sections:
+        for stage in section.stages:
+            for task in stage.tasks:
+                if task.id == task_instance_id:
+                    return task.template_id
     for stage in project.stages:
         for task in stage.tasks:
             if task.id == task_instance_id:
@@ -584,6 +852,26 @@ _DEMO_TRANSLATIONS: dict[str, str] = {
     "Frühzeitige Eigentümerdialoge + Alternativzufahrten": "Early landowner dialogues + alternative access roads",
     # Risk owner
     "Wegerechtsteam": "Land Rights Team",
+    # Section names
+    "Bayern Nord": "Bavaria North",
+    "Grenzbereich BY-HE": "Border Area BY-HE",
+    "Hessen Süd": "Hesse South",
+    # Permit labels
+    "Naturschutzgenehmigung": "Nature Conservation Permit",
+    "FFH-Verträglichkeitsprüfung": "FFH Compatibility Assessment",
+    "Waldumwandlungsgenehmigung": "Forest Conversion Permit",
+    "Waldausgleichsnachweis": "Forest Compensation Certificate",
+    "Wasserrechtliche Erlaubnis": "Water Law Permit",
+    "Gewässerquerungsgenehmigung": "Watercourse Crossing Permit",
+    "Denkmalschutzrechtliche Genehmigung": "Heritage Protection Permit",
+    "Kreuzungsvereinbarung DB": "Railway Crossing Agreement",
+    "Kreuzungsvereinbarung BAB": "Highway Crossing Agreement",
+    "Immissionsschutznachweis": "Immission Protection Certificate",
+    "Denkmalschutzrechtliche Genehmigung (Bodendenkmal)": "Heritage Protection Permit (Ground Monument)",
+    "Waldumwandlungsgenehmigung (Grenzbereich)": "Forest Conversion Permit (Border Area)",
+    "Immissionsschutznachweis (Grenzbereich)": "Immission Protection Certificate (Border Area)",
+    "Wasserrechtliche Erlaubnis (Hessen)": "Water Law Permit (Hesse)",
+    "Denkmalschutzrechtliche Genehmigung (Hessen)": "Heritage Protection Permit (Hesse)",
 }
 
 
@@ -627,5 +915,13 @@ def translate_project_display(project: Project, lang: str) -> Project:
     for risk in p.risks:
         risk.mitigation = _t(risk.mitigation)
         risk.owner = _t(risk.owner)
+
+    # Sections
+    for section in p.sections:
+        section.name = _t(section.name)
+
+    # Permits
+    for permit in p.permits:
+        permit.label = _t(permit.label)
 
     return p

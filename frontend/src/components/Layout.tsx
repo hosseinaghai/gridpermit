@@ -1,12 +1,15 @@
-import { Globe, Info, Mail, Menu, X, Zap } from "lucide-react";
+import { ChevronDown, ChevronUp, Globe, Info, Menu, X, Zap } from "lucide-react";
 import { useState } from "react";
 import type { ProcessTemplate, Project } from "../types";
 import { useT } from "../i18n/translations";
 import { useWorkflowStore } from "../store/workflowStore";
 import EmailInbox from "./EmailInbox";
+import EmailPanel from "./EmailPanel";
 import Impressum from "./Impressum";
 import InfoPanel from "./InfoPanel";
+import PermitDashboard from "./PermitDashboard";
 import ProcessStepper from "./ProcessStepper";
+import SectionTabs from "./SectionTabs";
 import WorkflowWizard from "./WorkflowWizard";
 
 interface Props {
@@ -28,9 +31,7 @@ export default function Layout({ project, template }: Props) {
   const selectedStageTpl = template.stages[selectedStageIndex] ?? null;
   const [emailOpen, setEmailOpen] = useState(false);
   const [impressumOpen, setImpressumOpen] = useState(false);
-
-  // Count unread emails (mock)
-  const unreadEmails = 3;
+  const [dashboardOpen, setDashboardOpen] = useState(true);
 
   return (
     <div className="flex h-screen flex-col">
@@ -83,21 +84,38 @@ export default function Layout({ project, template }: Props) {
               <Info className="h-4 w-4" />
             </button>
           )}
-          {/* Email inbox button */}
-          <button
-            onClick={() => setEmailOpen(true)}
-            className="relative rounded-lg border border-gray-200 p-2 text-gray-600 transition hover:bg-gray-50 hover:text-gray-800"
-            title={t("layout.emailInbox")}
-          >
-            <Mail className="h-4 w-4" />
-            {unreadEmails > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">
-                {unreadEmails}
-              </span>
-            )}
-          </button>
         </div>
       </header>
+
+      {/* Collapsible Dashboard */}
+      <div className="border-b border-gray-200 bg-gray-50">
+        <button
+          onClick={() => setDashboardOpen(!dashboardOpen)}
+          className="flex w-full items-center gap-2 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400 transition hover:text-gray-600 md:px-6"
+        >
+          {dashboardOpen ? (
+            <ChevronUp className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5" />
+          )}
+          {t("layout.dashboard")}
+        </button>
+        {dashboardOpen && (
+          <div className="grid grid-cols-1 gap-3 px-3 pb-3 md:grid-cols-2 md:px-6">
+            <PermitDashboard project={project} template={template} onNavigate={() => setDashboardOpen(false)} />
+            <EmailPanel
+              project={project}
+              template={template}
+              onOpenFullView={() => setEmailOpen(true)}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Section tabs */}
+      {project.sections.length > 0 && (
+        <SectionTabs project={project} template={template} />
+      )}
 
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">

@@ -34,7 +34,7 @@ function daysUntil(dateStr: string): number {
 }
 
 export default function WorkflowWizard({ project, template }: Props) {
-  const { selectedStageIndex, selectedTaskId, openTask, closeTask } =
+  const { selectedStageIndex, selectedSectionIndex, selectedTaskId, openTask, closeTask } =
     useWorkflowStore();
   const [prevContextOpen, setPrevContextOpen] = useState(true);
   const t = useT();
@@ -48,7 +48,9 @@ export default function WorkflowWizard({ project, template }: Props) {
     pending: { icon: Circle, color: "text-gray-300", label: t("wizard.statusOpen") },
   };
 
-  const stage: StageInstance | undefined = project.stages[selectedStageIndex];
+  const currentSection = project.sections[selectedSectionIndex];
+  const sectionStages = currentSection?.stages ?? project.stages;
+  const stage: StageInstance | undefined = sectionStages[selectedStageIndex];
   const stageTpl: StageTemplate | undefined = template.stages[selectedStageIndex];
 
   if (!stage || !stageTpl) {
@@ -71,6 +73,7 @@ export default function WorkflowWizard({ project, template }: Props) {
           stageIndex={selectedStageIndex}
           taskInstance={taskInst}
           taskTemplate={taskTpl}
+          sectionId={currentSection?.id}
           onClose={closeTask}
         />
       );
@@ -78,7 +81,7 @@ export default function WorkflowWizard({ project, template }: Props) {
   }
 
   // Collect previous stage data
-  const previousStages = project.stages.slice(0, selectedStageIndex);
+  const previousStages = sectionStages.slice(0, selectedStageIndex);
   const hasPreviousData = previousStages.some((s) =>
     s.tasks.some((t) => Object.keys(t.form_data).length > 0)
   );
@@ -87,8 +90,8 @@ export default function WorkflowWizard({ project, template }: Props) {
   const stageBlockers = project.blockers;
 
   // Overall progress
-  const totalTasks = project.stages.reduce((acc, s) => acc + s.tasks.length, 0);
-  const doneTasks = project.stages.reduce(
+  const totalTasks = sectionStages.reduce((acc, s) => acc + s.tasks.length, 0);
+  const doneTasks = sectionStages.reduce(
     (acc, s) => acc + s.tasks.filter((t) => t.status === "done").length,
     0
   );

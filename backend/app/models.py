@@ -77,6 +77,45 @@ class StageInstance(BaseModel):
     tasks: list[TaskInstance]
 
 
+# --- Section & permit models ---
+
+class Section(BaseModel):
+    id: str
+    name: str
+    km_start: float
+    km_end: float
+    region: str
+    stages: list[StageInstance] = Field(default_factory=list)
+
+
+class PermitType(str, Enum):
+    NATURSCHUTZ = "naturschutz"
+    WALDUMWANDLUNG = "waldumwandlung"
+    WASSERRECHT = "wasserrecht"
+    DENKMALSCHUTZ = "denkmalschutz"
+    KREUZUNG = "kreuzung"
+    IMMISSION = "immission"
+
+
+class PermitStatus(BaseModel):
+    id: str
+    section_id: str
+    permit_type: PermitType
+    label: str
+    status: str  # "open" | "in_progress" | "approved" | "rejected"
+
+
+class EmailAction(BaseModel):
+    action_type: str  # "respond" | "send_document" | "forward" | "create_blocker" | "assign_task"
+    label: str
+    description: str
+    confidence: float
+    document_id: Optional[str] = None
+    task_template_id: Optional[str] = None
+    stage_index: Optional[int] = None
+    section_id: Optional[str] = None
+
+
 # --- Rich project context models ---
 
 class Blocker(BaseModel):
@@ -193,6 +232,8 @@ class Project(BaseModel):
     risks: list[Risk] = Field(default_factory=list)
     regulatory_requirements: list[RegulatoryRequirement] = Field(default_factory=list)
     draft_templates: list[DraftTemplate] = Field(default_factory=list)
+    sections: list[Section] = Field(default_factory=list)
+    permits: list[PermitStatus] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=datetime.now)
 
 
